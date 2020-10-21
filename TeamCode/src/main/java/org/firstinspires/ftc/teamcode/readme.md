@@ -1,4 +1,4 @@
-## Boomerang TeamCode Module
+## TeamCode Module
 
 Welcome!
 
