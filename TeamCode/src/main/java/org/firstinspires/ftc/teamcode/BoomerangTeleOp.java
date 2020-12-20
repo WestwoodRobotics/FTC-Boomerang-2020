@@ -52,7 +52,7 @@ public class BoomerangTeleOp extends OpMode
         conveyorBeltR = hardwareMap.get(DcMotor.class, "conveyorR");
         shooterMotor = hardwareMap.get(DcMotor.class, "shooter");
         wobbleArmServo = hardwareMap.get(CRServoImpl.class, "wobbleArm");
-        wobbleClawServo = hardwareMap.get(CRServoImpl.class, "wobbleClaw")
+        wobbleClawServo = hardwareMap.get(CRServoImpl.class, "wobbleClaw");
 
         leftFrontDrive.setDirection(DcMotor.Direction.REVERSE);
         rightFrontDrive.setDirection(DcMotor.Direction.FORWARD);
