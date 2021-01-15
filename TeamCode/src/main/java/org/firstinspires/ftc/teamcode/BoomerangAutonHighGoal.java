@@ -11,6 +11,8 @@ import com.qualcomm.robotcore.util.ElapsedTime;
 import com.qualcomm.robotcore.util.Range;
 
 import static org.firstinspires.ftc.robotcore.external.BlocksOpModeCompanion.hardwareMap;
+import static org.firstinspires.ftc.teamcode.BoomerangAutonFunctions.forward;
+
 @Autonomous(name="HighGoal")
 public class HighGoal extends OpMode {
 
@@ -18,6 +20,9 @@ public class HighGoal extends OpMode {
     DcMotor rightBackMotor = null;
     DcMotor leftFrontMotor = null;
     DcMotor rightFrontMotor = null;
+    DcMotor conveyorBeltMotor = null;
+    DcMotor conveyorBeltL = null;
+    DcMotor conveyorBeltR = null;
 
     @Override
     public void init() {
@@ -27,10 +32,13 @@ public class HighGoal extends OpMode {
         // Initialize the hardware variables. Note that the strings used here as parameters
         // to 'get' must correspond to the names assigned during the robot configuration
         // step (using the FTC Robot Controller app on the phone).
-        leftBackMotor  = hardwareMap.get(DcMotor.class, "left_back_drive");
-        rightBackMotor = hardwareMap.get(DcMotor.class, "right_back_drive");
-        leftFrontMotor  = hardwareMap.get(DcMotor.class, "left_front_drive");
-        rightFrontMotor = hardwareMap.get(DcMotor.class, "right_front_drive");
+        leftBackMotor = hardwareMap.get(DcMotor.class, "leftFront");
+        rightBackMotor = hardwareMap.get(DcMotor.class, "rightFront");
+        leftFrontMotor = hardwareMap.get(DcMotor.class, "leftBack");
+        rightFrontMotor = hardwareMap.get(DcMotor.class, "rightBack");
+        conveyorBeltL = hardwareMap.get(DcMotor.class, "conveyorL");
+        conveyorBeltR = hardwareMap.get(DcMotor.class, "conveyorR");
+        conveyorBeltMotor = hardwareMap.get(DcMotor.class, "shooter");
         // Most robots need the motor on one side to be reversed to drive forward
         // Reverse the motor that runs backwards when connected directly to the battery
         leftFrontMotor.setDirection(DcMotor.Direction.FORWARD);
@@ -42,19 +50,30 @@ public class HighGoal extends OpMode {
         rightBackMotor.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
         leftFrontMotor.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
         rightFrontMotor.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+    }
 
-        static void stop() {
-            leftBackMotor.setPower(0);
+    @Override
+    public void loop() {
+        forwardRobot(21);
+        leftRobot(21);
+        //Shoot
+        forwardRobot(21);
+
+    }
+
+    private void stopRobot() {
             leftBackMotor.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
-            rightBackMotor.setPower(0);
-            rightBackMotor.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
-            leftFrontMotor.setPower(0);
             leftFrontMotor.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
-            rightFrontMotor.setPower(0);
+            rightBackMotor.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
             rightFrontMotor.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+
+            leftBackMotor.setPower(0);
+            leftFrontMotor.setPower(0);
+            rightBackMotor.setPower(0);
+            rightFrontMotor.setPower(0);
         }
 
-        static void forward(double inches) {
+        private void forwardRobot(double inches) {
             double inchesEncoderValue = 1; //(((inches/circumference)/gearingRatio))/28; must be fixed later
             double motorEncoderValue = leftBackMotor.getCurrentPosition();
             leftBackMotor.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
@@ -69,7 +88,83 @@ public class HighGoal extends OpMode {
             while(motorEncoderValue<inchesEncoderValue) {
                 motorEncoderValue = leftBackMotor.getCurrentPosition();
             }
-            stop();
+            stopRobot();
+        }
+
+        private void backwardRobot(double inches) {
+            double inchesEncoderValue = 1; //(((inches/circumference)/gearingRatio))/28; must be fixed later
+            double motorEncoderValue = (leftBackMotor.getCurrentPosition())*-1;
+            leftBackMotor.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+            rightBackMotor.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+            leftFrontMotor.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+            rightFrontMotor.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+
+            leftBackMotor.setPower(-1);
+            rightBackMotor.setPower(-1);
+            leftFrontMotor.setPower(-1);
+            rightFrontMotor.setPower(-1);
+            while(motorEncoderValue<inchesEncoderValue) {
+                motorEncoderValue = leftBackMotor.getCurrentPosition();
+            }
+            stopRobot();
+        }
+
+        private void leftRobot(double inches){
+            double inchesEncoderValue = 1; //(((inches/circumference)/gearingRatio))/28; must be fixed later
+            double motorEncoderValue = (leftBackMotor.getCurrentPosition())*-1;
+            leftBackMotor.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+            rightBackMotor.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+            leftFrontMotor.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+            rightFrontMotor.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+
+            leftBackMotor.setPower(1);
+            rightBackMotor.setPower(-1);
+            leftFrontMotor.setPower(-1);
+            rightFrontMotor.setPower(1);
+            while (motorEncoderValue < inchesEncoderValue) {
+                motorEncoderValue = leftBackMotor.getCurrentPosition();
+            }
+            stopRobot();
+        }
+
+        private void rightRobot(double inches){
+            double inchesEncoderValue = 1; //(((inches/circumference)/gearingRatio))/28; must be fixed later
+            double motorEncoderValue = (leftBackMotor.getCurrentPosition())*-1;
+            leftBackMotor.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+            rightBackMotor.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+            leftFrontMotor.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+            rightFrontMotor.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+
+            leftBackMotor.setPower(-1);
+            rightBackMotor.setPower(1);
+            leftFrontMotor.setPower(1);
+            rightFrontMotor.setPower(-1);
+            while (motorEncoderValue < inchesEncoderValue) {
+                motorEncoderValue = rightBackMotor.getCurrentPosition();
+            }
+            stopRobot();
+        }
+
+        private void rotateRobot(double degrees){
+            double degreesEncoderValue = 1; //must be fixed later
+            double motorEncoderValue = (leftBackMotor.getCurrentPosition())*-1;
+            leftBackMotor.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+            rightBackMotor.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+            leftFrontMotor.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+            rightFrontMotor.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+
+            leftBackMotor.setPower(1);
+            rightBackMotor.setPower(-1);
+            leftFrontMotor.setPower(1);
+            rightFrontMotor.setPower(-1);
+            while (motorEncoderValue < degreesEncoderValue) {
+                motorEncoderValue = leftBackMotor.getCurrentPosition();
+            }
+            stopRobot();
+        }
+
+        private void shoot(double power) {
+            // Write Code Here
         }
 
         // The following code is being used for reference. It may or may not be included in the final code.
