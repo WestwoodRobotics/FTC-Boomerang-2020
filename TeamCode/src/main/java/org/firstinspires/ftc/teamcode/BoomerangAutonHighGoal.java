@@ -5,6 +5,7 @@ import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
+import com.qualcomm.robotcore.hardware.CRServoImpl;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorController;
 import com.qualcomm.robotcore.util.ElapsedTime;
@@ -15,7 +16,8 @@ import static org.firstinspires.ftc.teamcode.BoomerangAutonFunctions.forward;
 
 @Autonomous(name="HighGoal")
 public class HighGoal extends OpMode {
-
+    private final ElapsedTime runtime = new ElapsedTime();
+    private CRServoImpl wobbleClawServo = null;
     DcMotor leftBackMotor = null;
     DcMotor rightBackMotor = null;
     DcMotor leftFrontMotor = null;
@@ -39,12 +41,17 @@ public class HighGoal extends OpMode {
         conveyorBeltL = hardwareMap.get(DcMotor.class, "conveyorL");
         conveyorBeltR = hardwareMap.get(DcMotor.class, "conveyorR");
         conveyorBeltMotor = hardwareMap.get(DcMotor.class, "shooter");
+        wobbleClawServo = hardwareMap.get(CRServoImpl.class, "wobbleClaw");
         // Most robots need the motor on one side to be reversed to drive forward
         // Reverse the motor that runs backwards when connected directly to the battery
         leftFrontMotor.setDirection(DcMotor.Direction.FORWARD);
         rightFrontMotor.setDirection(DcMotor.Direction.FORWARD);
         leftBackMotor.setDirection(DcMotor.Direction.FORWARD);
         rightBackMotor.setDirection(DcMotor.Direction.FORWARD);
+        conveyorBeltL.setDirection(DcMotor.Direction.FORWARD);
+        conveyorBeltR.setDirection(DcMotor.Direction.FORWARD);
+        conveyorBeltMotor.setDirection(DcMotor.Direction.FORWARD);
+        wobbleClawServo.setDirection(CRServoImpl.Direction.FORWARD);
 
         leftBackMotor.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
         rightBackMotor.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
@@ -54,11 +61,8 @@ public class HighGoal extends OpMode {
 
     @Override
     public void loop() {
-        forwardRobot(21);
-        leftRobot(21);
-        //Shoot
-        forwardRobot(21);
-
+        highGoalAction();
+        wobbleGoalAction();
     }
 
     private void stopRobot() {
@@ -66,11 +70,18 @@ public class HighGoal extends OpMode {
             leftFrontMotor.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
             rightBackMotor.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
             rightFrontMotor.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+            conveyorBeltMotor.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+            conveyorBeltL.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+            conveyorBeltR.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
 
             leftBackMotor.setPower(0);
             leftFrontMotor.setPower(0);
             rightBackMotor.setPower(0);
             rightFrontMotor.setPower(0);
+            conveyorBeltL.setPower(0);
+            conveyorBeltR.setPower(0);
+            conveyorBeltMotor.setPower(0);
+            wobbleClawServo.setPower(0);
         }
 
         private void forwardRobot(double inches) {
@@ -163,8 +174,45 @@ public class HighGoal extends OpMode {
             stopRobot();
         }
 
-        private void shoot(double power) {
-            // Write Code Here
+        private void shoot() {
+            runtime.reset();
+            while (getRuntime() < 10) {
+                conveyorBeltR.setPower(1);
+                conveyorBeltL.setPower(1);
+                conveyorBeltMotor.setPower(1);
+                getRuntime();
+            }
+            stopRobot();
+        }
+
+        private void highGoalAction() {
+            forwardRobot(21);
+            leftRobot(21);
+            shoot();
+            forwardRobot(21);
+        }
+
+        private void wobbleGoalAction() {
+            leftRobot(3);
+            forwardRobot(18);
+            //sense for # of rings
+            leftRobot(21);
+            forwardRobot(36);
+            rightRobot(21);
+            shoot();
+            rightRobot(3);
+            forwardRobot(24);
+            // if A:
+            rotateRobot(180);
+            wobbleClawServo.setPower(-1); // drop wobble goal
+            //if B:
+            rotateRobot(90);
+            wobbleClawServo.setPower(-1); // drop wobble goal
+            //if C:
+            forwardRobot(36);
+            rotateRobot(-180);
+            wobbleClawServo.setPower(-1); // drop wobble goal
+            forwardRobot(36);
         }
 
         // The following code is being used for reference. It may or may not be included in the final code.
