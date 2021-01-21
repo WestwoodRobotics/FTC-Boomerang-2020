@@ -15,7 +15,7 @@ import static org.firstinspires.ftc.robotcore.external.BlocksOpModeCompanion.har
 import static org.firstinspires.ftc.teamcode.BoomerangAutonFunctions.forward;
 
 @Autonomous(name="HighGoal")
-public class HighGoal extends OpMode {
+public class BoomerangAutonHighGoal extends LinearOpMode {
     private final ElapsedTime runtime = new ElapsedTime();
     private CRServoImpl wobbleClawServo = null;
     DcMotor leftBackMotor = null;
@@ -27,7 +27,7 @@ public class HighGoal extends OpMode {
     DcMotor conveyorBeltR = null;
 
     @Override
-    public void init() {
+    public void runOpMode() {
         telemetry.addData("Status", "Initialized");
         telemetry.update();
 
@@ -57,15 +57,13 @@ public class HighGoal extends OpMode {
         rightBackMotor.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
         leftFrontMotor.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
         rightFrontMotor.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
-    }
-
-    @Override
-    public void loop() {
+        waitForStart();
+        runtime.reset();
         highGoalAction();
-        wobbleGoalAction();
+        // wobbleGoalAction();
     }
 
-    private void stopRobot() {
+        private void stopRobot() {
             leftBackMotor.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
             leftFrontMotor.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
             rightBackMotor.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
@@ -192,7 +190,7 @@ public class HighGoal extends OpMode {
             forwardRobot(21);
         }
 
-        private void wobbleGoalAction() {
+        /* private void wobbleGoalAction() {
             leftRobot(3);
             forwardRobot(18);
             //sense for # of rings
@@ -213,44 +211,6 @@ public class HighGoal extends OpMode {
             rotateRobot(-180);
             wobbleClawServo.setPower(-1); // drop wobble goal
             forwardRobot(36);
-        }
-
-        // The following code is being used for reference. It may or may not be included in the final code.
-/*        // Wait for the game to start (driver presses PLAY)
-        waitForStart();
-        runtime.reset();
-
-        // run until the end of the match (driver presses STOP)
-        while (opModeIsActive()) {
-
-            // Setup a variable for each drive wheel to save power level for telemetry
-            double leftPower;
-            double rightPower;
-
-            // Choose to drive using either Tank Mode, or POV Mode
-            // Comment out the method that's not used.  The default below is POV.
-
-            // POV Mode uses left stick to go forward, and right stick to turn.
-            // - This uses basic math to combine motions and is easier to drive straight.
-            double drive = -gamepad1.left_stick_y;
-            double turn  =  gamepad1.right_stick_x;
-            leftPower    = Range.clip(drive + turn, -1.0, 1.0) ;
-            rightPower   = Range.clip(drive - turn, -1.0, 1.0) ;
-
-            // Tank Mode uses one stick to control each wheel.
-            // - This requires no math, but it is hard to drive forward slowly and keep straight.
-            // leftPower  = -gamepad1.left_stick_y ;
-            // rightPower = -gamepad1.right_stick_y ;
-
-            // Send calculated power to wheels
-            leftDrive.setPower(leftPower);
-            rightDrive.setPower(rightPower);
-
-            // Show the elapsed game time and wheel power.
-            telemetry.addData("Status", "Run Time: " + runtime.toString());
-            telemetry.addData("Motors", "left (%.2f), right (%.2f)", leftPower, rightPower);
-            telemetry.update();*/
-        }
-    }
+        } */
 }
 
