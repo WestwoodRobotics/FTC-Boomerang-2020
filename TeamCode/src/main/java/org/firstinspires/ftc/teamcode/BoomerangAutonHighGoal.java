@@ -137,7 +137,9 @@ public class BoomerangAutonHighGoal extends LinearOpMode {
         }
 
         private void rightRobot(double inches){
-            double inchesEncoderValue = 1; //(((inches/circumference)/gearingRatio))/28; must be fixed later
+            double inchesEncoderValue = 1; //(((inches/circumference)*gearingRatio))/28; must be fixed later
+            //gearingRatio = 20:1
+            //Wheels: Tetrix Max Mecanum Wheels
             double motorEncoderValue = (leftBackMotor.getCurrentPosition())*-1;
             leftBackMotor.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
             rightBackMotor.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
