@@ -10,6 +10,7 @@ import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorController;
 import com.qualcomm.robotcore.util.ElapsedTime;
 import com.qualcomm.robotcore.util.Range;
+import java.lang.Math.*;
 
 import static org.firstinspires.ftc.robotcore.external.BlocksOpModeCompanion.hardwareMap;
 import static org.firstinspires.ftc.teamcode.BoomerangAutonFunctions.forward;
@@ -83,7 +84,7 @@ public class BoomerangAutonHighGoal extends LinearOpMode {
         }
 
         private void forwardRobot(double inches) {
-            double inchesEncoderValue = 1; //(((inches/circumference)/gearingRatio))/28; must be fixed later
+            double inchesEncoderValue = ((inches/(Math.PI*98))*(20))/28; //(((inches/circumference)/gearingRatio))/28; must be fixed later
             double motorEncoderValue = leftBackMotor.getCurrentPosition();
             leftBackMotor.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
             rightBackMotor.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
@@ -101,7 +102,7 @@ public class BoomerangAutonHighGoal extends LinearOpMode {
         }
 
         private void backwardRobot(double inches) {
-            double inchesEncoderValue = 1; //(((inches/circumference)/gearingRatio))/28; must be fixed later
+            double inchesEncoderValue = ((inches/(Math.PI*98))*(20))/28; //(((inches/circumference)/gearingRatio))/28; must be fixed later
             double motorEncoderValue = (leftBackMotor.getCurrentPosition())*-1;
             leftBackMotor.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
             rightBackMotor.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
@@ -119,7 +120,7 @@ public class BoomerangAutonHighGoal extends LinearOpMode {
         }
 
         private void leftRobot(double inches){
-            double inchesEncoderValue = 1; //(((inches/circumference)/gearingRatio))/28; must be fixed later
+            double inchesEncoderValue = ((inches/(Math.PI*98))*(20))/28; //(((inches/circumference)/gearingRatio))/28; must be fixed later
             double motorEncoderValue = (leftBackMotor.getCurrentPosition())*-1;
             leftBackMotor.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
             rightBackMotor.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
@@ -137,7 +138,7 @@ public class BoomerangAutonHighGoal extends LinearOpMode {
         }
 
         private void rightRobot(double inches){
-            double inchesEncoderValue = 1; //(((inches/circumference)*gearingRatio))/28; must be fixed later
+            double inchesEncoderValue = ((inches/(Math.PI*98))*(20))/28;
             //gearingRatio = 20:1
             //Wheels: Tetrix Max Mecanum Wheels
             double motorEncoderValue = (leftBackMotor.getCurrentPosition())*-1;
@@ -157,7 +158,7 @@ public class BoomerangAutonHighGoal extends LinearOpMode {
         }
 
         private void rotateRobot(double degrees){
-            double degreesEncoderValue = 1; //must be fixed later
+            double degreesEncoderValue = ((degrees/(Math.PI*98))*(20))/28; //must be fixed later
             double motorEncoderValue = (leftBackMotor.getCurrentPosition())*-1;
             leftBackMotor.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
             rightBackMotor.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
