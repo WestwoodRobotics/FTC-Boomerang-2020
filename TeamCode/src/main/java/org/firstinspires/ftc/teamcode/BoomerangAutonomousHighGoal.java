@@ -13,9 +13,8 @@ import com.qualcomm.robotcore.util.Range;
 import java.lang.Math.*;
 
 
-
-@Autonomous(name="HighGoal")
-public class BoomerangAutonHighGoal extends LinearOpMode {
+@Autonomous(name="BoomerangAutonomousHighGoal")
+public class BoomerangAutonomousHighGoal extends LinearOpMode {
     private final ElapsedTime runtime = new ElapsedTime();
     private CRServoImpl wobbleClawServo = null;
     DcMotor leftBackMotor = null;
@@ -25,6 +24,22 @@ public class BoomerangAutonHighGoal extends LinearOpMode {
     DcMotor conveyorBeltMotor = null;
     DcMotor conveyorBeltL = null;
     DcMotor conveyorBeltR = null;
+
+
+    public BoomerangAutonomousHighGoal() {
+        super();
+    }
+
+   /*  public void main() throws InterruptedException {
+        highGoalAction();
+    } */
+
+    private void highGoalAction() {
+        forwardRobot(21);
+        leftRobot(21);
+        shoot();
+        forwardRobot(21);
+    }
 
     @Override
     public void runOpMode() {
@@ -57,11 +72,16 @@ public class BoomerangAutonHighGoal extends LinearOpMode {
         resetEncoders();
         waitForStart();
         runtime.reset();
-        while(opModeIsActive()) {
+
+        if (opModeIsActive()) highGoalAction();
+
+
+
+       /* while(opModeIsActive()) {
             highGoalAction();
             break;
             // wobbleGoalAction();
-        }
+        }*/
     }
 
     private void stopRobot() {
@@ -135,6 +155,7 @@ public class BoomerangAutonHighGoal extends LinearOpMode {
         resetEncoders();
 
         leftBackMotor.setTargetPosition((inchesEncoderValue));
+        rightBackMotor.setTargetPosition(inchesEncoderValue);
 
         leftBackMotor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
         rightBackMotor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
@@ -158,6 +179,7 @@ public class BoomerangAutonHighGoal extends LinearOpMode {
         resetEncoders();
 
         rightBackMotor.setTargetPosition((inchesEncoderValue));
+        leftBackMotor.setTargetPosition(inchesEncoderValue);
 
         leftBackMotor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
         rightBackMotor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
@@ -192,6 +214,7 @@ public class BoomerangAutonHighGoal extends LinearOpMode {
         resetEncoders();
 
         leftBackMotor.setTargetPosition((degreesEncoderValue));
+        rightBackMotor.setTargetPosition(degreesEncoderValue);
 
         leftBackMotor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
         rightBackMotor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
@@ -221,14 +244,11 @@ public class BoomerangAutonHighGoal extends LinearOpMode {
         stopRobot();
     }
 
-    private void highGoalAction() {
-        forwardRobot(21);
-        leftRobot(21);
-        shoot();
-        forwardRobot(21);
-    }
 
-        /* private void wobbleGoalAction() {
+
+
+
+    /* private void wobbleGoalAction() {
             leftRobot(3);
             forwardRobot(18);
             //sense for # of rings
