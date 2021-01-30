@@ -12,8 +12,7 @@ import com.qualcomm.robotcore.util.ElapsedTime;
 import com.qualcomm.robotcore.util.Range;
 import java.lang.Math.*;
 
-import static org.firstinspires.ftc.robotcore.external.BlocksOpModeCompanion.hardwareMap;
-import static org.firstinspires.ftc.teamcode.BoomerangAutonFunctions.forward;
+
 
 @Autonomous(name="HighGoal")
 public class BoomerangAutonHighGoal extends LinearOpMode {
@@ -53,145 +52,181 @@ public class BoomerangAutonHighGoal extends LinearOpMode {
         conveyorBeltR.setDirection(DcMotor.Direction.FORWARD);
         conveyorBeltMotor.setDirection(DcMotor.Direction.FORWARD);
         wobbleClawServo.setDirection(CRServoImpl.Direction.FORWARD);
+        stopRobot();
 
+        resetEncoders();
+        waitForStart();
+        runtime.reset();
+        while(opModeIsActive()) {
+            highGoalAction();
+            break;
+            // wobbleGoalAction();
+        }
+    }
+
+    private void stopRobot() {
+        leftBackMotor.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+        leftFrontMotor.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+        rightBackMotor.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+        rightFrontMotor.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+        conveyorBeltMotor.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+        conveyorBeltL.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+        conveyorBeltR.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+
+        leftBackMotor.setPower(0);
+        leftFrontMotor.setPower(0);
+        rightBackMotor.setPower(0);
+        rightFrontMotor.setPower(0);
+        conveyorBeltL.setPower(0);
+        conveyorBeltR.setPower(0);
+        conveyorBeltMotor.setPower(0);
+        wobbleClawServo.setPower(0);
+    }
+
+    private void forwardRobot(double inches) {
+        int inchesEncoderValue = (int)((inches/(Math.PI*98))*(20))/28; //(((inches/circumference)/gearingRatio))/28; must be fixed later
+        double motorEncoderValue = leftBackMotor.getCurrentPosition();
+        resetEncoders();
+
+        leftBackMotor.setTargetPosition((inchesEncoderValue));
+
+        leftBackMotor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+        rightBackMotor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+        leftFrontMotor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+        rightFrontMotor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+
+        leftBackMotor.setPower(1);
+        rightBackMotor.setPower(1);
+        leftFrontMotor.setPower(1);
+        rightFrontMotor.setPower(1);
+
+        while(leftBackMotor.isBusy() && rightBackMotor.isBusy() && leftFrontMotor.isBusy() && rightFrontMotor.isBusy()) {
+            // Continue
+        }
+        stopRobot();
+    }
+
+    private void backwardRobot(double inches) {
+        int inchesEncoderValue = (int)((inches/(Math.PI*98))*(20))/28; //(((inches/circumference)/gearingRatio))/28; must be fixed later
+        double motorEncoderValue = (leftBackMotor.getCurrentPosition())*-1;
+        resetEncoders();
+
+        leftBackMotor.setTargetPosition((inchesEncoderValue));
+
+        leftBackMotor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+        rightBackMotor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+        leftFrontMotor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+        rightFrontMotor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+
+        leftBackMotor.setPower(-1);
+        rightBackMotor.setPower(-1);
+        leftFrontMotor.setPower(-1);
+        rightFrontMotor.setPower(-1);
+
+        while(leftBackMotor.isBusy() && rightBackMotor.isBusy() && leftFrontMotor.isBusy() && rightFrontMotor.isBusy()) {
+            // Continue
+        }
+        stopRobot();
+    }
+
+    private void leftRobot(double inches){
+        int inchesEncoderValue = (int)((inches/(Math.PI*98))*(20))/28; //(((inches/circumference)/gearingRatio))/28; must be fixed later
+        double motorEncoderValue = (leftBackMotor.getCurrentPosition())*-1;
+        resetEncoders();
+
+        leftBackMotor.setTargetPosition((inchesEncoderValue));
+
+        leftBackMotor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+        rightBackMotor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+        leftFrontMotor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+        rightFrontMotor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+
+        leftBackMotor.setPower(1);
+        rightBackMotor.setPower(-1);
+        leftFrontMotor.setPower(-1);
+        rightFrontMotor.setPower(1);
+
+        while(leftBackMotor.isBusy() && rightBackMotor.isBusy() && leftFrontMotor.isBusy() && rightFrontMotor.isBusy()) {
+            // Continue
+        }
+        stopRobot();
+    }
+
+    private void rightRobot(double inches){
+        int inchesEncoderValue = (int)((inches/(Math.PI*98))*(20))/28;
+        double motorEncoderValue = (leftBackMotor.getCurrentPosition())*-1;
+        resetEncoders();
+
+        rightBackMotor.setTargetPosition((inchesEncoderValue));
+
+        leftBackMotor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+        rightBackMotor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+        leftFrontMotor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+        rightFrontMotor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+
+        leftBackMotor.setPower(-1);
+        rightBackMotor.setPower(1);
+        leftFrontMotor.setPower(1);
+        rightFrontMotor.setPower(-1);
+
+        while(leftBackMotor.isBusy() && rightBackMotor.isBusy() && leftFrontMotor.isBusy() && rightFrontMotor.isBusy()) {
+            // Continue
+        }
+        stopRobot();
+    }
+
+    private void resetEncoders() {
+        leftBackMotor.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        rightBackMotor.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        leftFrontMotor.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        rightFrontMotor.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
         leftBackMotor.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
         rightBackMotor.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
         leftFrontMotor.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
         rightFrontMotor.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
-        waitForStart();
-        runtime.reset();
-        highGoalAction();
-        // wobbleGoalAction();
     }
 
-        private void stopRobot() {
-            leftBackMotor.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
-            leftFrontMotor.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
-            rightBackMotor.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
-            rightFrontMotor.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
-            conveyorBeltMotor.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
-            conveyorBeltL.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
-            conveyorBeltR.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+    private void rotateRobot(double degrees){
+        int degreesEncoderValue = (int)((degrees/(Math.PI*98))*(20))/28; //must be fixed later
+        double motorEncoderValue = (leftBackMotor.getCurrentPosition())*-1;
+        resetEncoders();
 
-            leftBackMotor.setPower(0);
-            leftFrontMotor.setPower(0);
-            rightBackMotor.setPower(0);
-            rightFrontMotor.setPower(0);
-            conveyorBeltL.setPower(0);
-            conveyorBeltR.setPower(0);
-            conveyorBeltMotor.setPower(0);
-            wobbleClawServo.setPower(0);
+        leftBackMotor.setTargetPosition((degreesEncoderValue));
+
+        leftBackMotor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+        rightBackMotor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+        leftFrontMotor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+        rightFrontMotor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+
+
+        leftBackMotor.setPower(1);
+        rightBackMotor.setPower(-1);
+        leftFrontMotor.setPower(1);
+        rightFrontMotor.setPower(-1);
+
+        while(leftBackMotor.isBusy() && rightBackMotor.isBusy() && leftFrontMotor.isBusy() && rightFrontMotor.isBusy()) {
+            // Continue
         }
+        stopRobot();
+    }
 
-        private void forwardRobot(double inches) {
-            double inchesEncoderValue = ((inches/(Math.PI*98))*(20))/28; //(((inches/circumference)/gearingRatio))/28; must be fixed later
-            double motorEncoderValue = leftBackMotor.getCurrentPosition();
-            leftBackMotor.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-            rightBackMotor.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-            leftFrontMotor.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-            rightFrontMotor.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-
-            leftBackMotor.setPower(1);
-            rightBackMotor.setPower(1);
-            leftFrontMotor.setPower(1);
-            rightFrontMotor.setPower(1);
-            while(motorEncoderValue<inchesEncoderValue) {
-                motorEncoderValue = leftBackMotor.getCurrentPosition();
-            }
-            stopRobot();
+    private void shoot() {
+        runtime.reset();
+        while (getRuntime() < 10) {
+            conveyorBeltR.setPower(1);
+            conveyorBeltL.setPower(1);
+            conveyorBeltMotor.setPower(1);
+            getRuntime();
         }
+        stopRobot();
+    }
 
-        private void backwardRobot(double inches) {
-            double inchesEncoderValue = ((inches/(Math.PI*98))*(20))/28; //(((inches/circumference)/gearingRatio))/28; must be fixed later
-            double motorEncoderValue = (leftBackMotor.getCurrentPosition())*-1;
-            leftBackMotor.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-            rightBackMotor.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-            leftFrontMotor.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-            rightFrontMotor.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-
-            leftBackMotor.setPower(-1);
-            rightBackMotor.setPower(-1);
-            leftFrontMotor.setPower(-1);
-            rightFrontMotor.setPower(-1);
-            while(motorEncoderValue<inchesEncoderValue) {
-                motorEncoderValue = leftBackMotor.getCurrentPosition();
-            }
-            stopRobot();
-        }
-
-        private void leftRobot(double inches){
-            double inchesEncoderValue = ((inches/(Math.PI*98))*(20))/28; //(((inches/circumference)/gearingRatio))/28; must be fixed later
-            double motorEncoderValue = (leftBackMotor.getCurrentPosition())*-1;
-            leftBackMotor.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-            rightBackMotor.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-            leftFrontMotor.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-            rightFrontMotor.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-
-            leftBackMotor.setPower(1);
-            rightBackMotor.setPower(-1);
-            leftFrontMotor.setPower(-1);
-            rightFrontMotor.setPower(1);
-            while (motorEncoderValue < inchesEncoderValue) {
-                motorEncoderValue = leftBackMotor.getCurrentPosition();
-            }
-            stopRobot();
-        }
-
-        private void rightRobot(double inches){
-            double inchesEncoderValue = ((inches/(Math.PI*98))*(20))/28;
-            //gearingRatio = 20:1
-            //Wheels: Tetrix Max Mecanum Wheels
-            double motorEncoderValue = (leftBackMotor.getCurrentPosition())*-1;
-            leftBackMotor.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-            rightBackMotor.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-            leftFrontMotor.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-            rightFrontMotor.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-
-            leftBackMotor.setPower(-1);
-            rightBackMotor.setPower(1);
-            leftFrontMotor.setPower(1);
-            rightFrontMotor.setPower(-1);
-            while (motorEncoderValue < inchesEncoderValue) {
-                motorEncoderValue = rightBackMotor.getCurrentPosition();
-            }
-            stopRobot();
-        }
-
-        private void rotateRobot(double degrees){
-            double degreesEncoderValue = ((degrees/(Math.PI*98))*(20))/28; //must be fixed later
-            double motorEncoderValue = (leftBackMotor.getCurrentPosition())*-1;
-            leftBackMotor.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-            rightBackMotor.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-            leftFrontMotor.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-            rightFrontMotor.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-
-            leftBackMotor.setPower(1);
-            rightBackMotor.setPower(-1);
-            leftFrontMotor.setPower(1);
-            rightFrontMotor.setPower(-1);
-            while (motorEncoderValue < degreesEncoderValue) {
-                motorEncoderValue = leftBackMotor.getCurrentPosition();
-            }
-            stopRobot();
-        }
-
-        private void shoot() {
-            runtime.reset();
-            while (getRuntime() < 10) {
-                conveyorBeltR.setPower(1);
-                conveyorBeltL.setPower(1);
-                conveyorBeltMotor.setPower(1);
-                getRuntime();
-            }
-            stopRobot();
-        }
-
-        private void highGoalAction() {
-            forwardRobot(21);
-            leftRobot(21);
-            shoot();
-            forwardRobot(21);
-        }
+    private void highGoalAction() {
+        forwardRobot(21);
+        leftRobot(21);
+        shoot();
+        forwardRobot(21);
+    }
 
         /* private void wobbleGoalAction() {
             leftRobot(3);
@@ -216,4 +251,3 @@ public class BoomerangAutonHighGoal extends LinearOpMode {
             forwardRobot(36);
         } */
 }
-

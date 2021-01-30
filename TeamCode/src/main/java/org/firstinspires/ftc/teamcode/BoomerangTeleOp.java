@@ -87,6 +87,8 @@ public class BoomerangTeleOp extends OpMode
         leftFrontPower =-gamepad1.left_stick_y + gamepad1.left_stick_x +turn;
         leftBackPower = -gamepad1.left_stick_y - gamepad1.left_stick_x +turn;
 
+
+
         maxPower = Math.abs(rightFrontPower);
         if(Math.abs(rightBackPower)>maxPower){
             maxPower = rightBackPower;
@@ -150,7 +152,7 @@ public class BoomerangTeleOp extends OpMode
         conveyorBeltR.setPower(conveyorPower);
 
         if(gamepad2.right_trigger != 0){
-             shooterPower= 1;
+            shooterPower= 1;
         }
         else{
             shooterPower = 0;
