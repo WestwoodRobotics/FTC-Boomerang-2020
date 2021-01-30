@@ -111,12 +111,19 @@ public class BoomerangTeleOp extends OpMode
         else if(gamepad1.dpad_down){
             slowMode = true;
         }
-        if(slowMode == true){
+        if(slowMode){
             leftFrontPower *= .25;
             rightFrontPower *= .25;
             leftBackPower *= .25;
             rightBackPower *= .25;
         }
+        if(!slowMode){
+            leftFrontPower *= .8;
+            rightFrontPower *= .8;
+            leftBackPower *= .8;
+            rightBackPower *= .8;
+        }
+
 
         leftBackDrive.setPower(leftBackPower);
         leftFrontDrive.setPower(leftFrontPower);

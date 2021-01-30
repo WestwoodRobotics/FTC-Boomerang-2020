@@ -26,9 +26,9 @@ public class BoomerangAutonomousHighGoal extends LinearOpMode {
     DcMotor conveyorBeltR = null;
 
 
-    public BoomerangAutonomousHighGoal() {
+    /* public BoomerangAutonomousHighGoal() {
         super();
-    }
+    } */
 
    /*  public void main() throws InterruptedException {
         highGoalAction();
