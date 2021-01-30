@@ -37,7 +37,7 @@ public class BoomerangAutonomousHighGoal extends LinearOpMode {
     private void highGoalAction() {
         forwardRobot(21);
         leftRobot(21);
-        shoot();
+        // shoot();
         forwardRobot(21);
     }
 
@@ -73,15 +73,15 @@ public class BoomerangAutonomousHighGoal extends LinearOpMode {
         waitForStart();
         runtime.reset();
 
-        if (opModeIsActive()) highGoalAction();
+        // if (opModeIsActive()) highGoalAction();
 
 
 
-       /* while(opModeIsActive()) {
+        while(opModeIsActive()) {
             highGoalAction();
             break;
             // wobbleGoalAction();
-        }*/
+        }
     }
 
     private void stopRobot() {
@@ -104,34 +104,47 @@ public class BoomerangAutonomousHighGoal extends LinearOpMode {
     }
 
     private void forwardRobot(double inches) {
-        int inchesEncoderValue = (int)((inches/(Math.PI*98))*(20))/28; //(((inches/circumference)/gearingRatio))/28; must be fixed later
+
+        int inchesEncoderValue = (int)((inches*(Math.PI*4))*(20)/28); //(((inches/circumference)*gearingRatio))/28; must be fixed later
         double motorEncoderValue = leftBackMotor.getCurrentPosition();
         resetEncoders();
 
-        leftBackMotor.setTargetPosition((inchesEncoderValue));
+
+
+        leftBackMotor.setTargetPosition(inchesEncoderValue);
+        rightBackMotor.setTargetPosition(inchesEncoderValue);
+        leftFrontMotor.setTargetPosition(inchesEncoderValue);
+        rightFrontMotor.setTargetPosition(inchesEncoderValue);
 
         leftBackMotor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
         rightBackMotor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
         leftFrontMotor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
         rightFrontMotor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
 
+
         leftBackMotor.setPower(1);
         rightBackMotor.setPower(1);
         leftFrontMotor.setPower(1);
         rightFrontMotor.setPower(1);
 
-        while(leftBackMotor.isBusy() && rightBackMotor.isBusy() && leftFrontMotor.isBusy() && rightFrontMotor.isBusy()) {
-            // Continue
+        telemetry.addData("leftBack", (inchesEncoderValue));
+        telemetry.update();
+
+        while(leftBackMotor.isBusy() || rightBackMotor.isBusy() || leftFrontMotor.isBusy() || rightFrontMotor.isBusy()) {
+            //continue
         }
         stopRobot();
     }
 
     private void backwardRobot(double inches) {
-        int inchesEncoderValue = (int)((inches/(Math.PI*98))*(20))/28; //(((inches/circumference)/gearingRatio))/28; must be fixed later
-        double motorEncoderValue = (leftBackMotor.getCurrentPosition())*-1;
+        int inchesEncoderValue = (int)((inches*(Math.PI*4))*(20)/28); //(((inches/circumference)*gearingRatio))/28; must be fixed later
+        double motorEncoderValue = leftBackMotor.getCurrentPosition();
         resetEncoders();
 
         leftBackMotor.setTargetPosition((inchesEncoderValue));
+        rightBackMotor.setTargetPosition(inchesEncoderValue);
+        leftFrontMotor.setTargetPosition(inchesEncoderValue);
+        rightFrontMotor.setTargetPosition(inchesEncoderValue);
 
         leftBackMotor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
         rightBackMotor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
@@ -143,19 +156,21 @@ public class BoomerangAutonomousHighGoal extends LinearOpMode {
         leftFrontMotor.setPower(-1);
         rightFrontMotor.setPower(-1);
 
-        while(leftBackMotor.isBusy() && rightBackMotor.isBusy() && leftFrontMotor.isBusy() && rightFrontMotor.isBusy()) {
-            // Continue
+        while(leftBackMotor.isBusy() || rightBackMotor.isBusy() || leftFrontMotor.isBusy() || rightFrontMotor.isBusy()) {
+            //continue
         }
         stopRobot();
     }
 
     private void leftRobot(double inches){
-        int inchesEncoderValue = (int)((inches/(Math.PI*98))*(20))/28; //(((inches/circumference)/gearingRatio))/28; must be fixed later
-        double motorEncoderValue = (leftBackMotor.getCurrentPosition())*-1;
+        int inchesEncoderValue = (int)((inches*(Math.PI*4))*(20)/28); //(((inches/circumference)*gearingRatio))/28; must be fixed later
+        double motorEncoderValue = leftBackMotor.getCurrentPosition();
         resetEncoders();
 
         leftBackMotor.setTargetPosition((inchesEncoderValue));
         rightBackMotor.setTargetPosition(inchesEncoderValue);
+        leftFrontMotor.setTargetPosition(inchesEncoderValue);
+        rightFrontMotor.setTargetPosition(inchesEncoderValue);
 
         leftBackMotor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
         rightBackMotor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
@@ -167,19 +182,21 @@ public class BoomerangAutonomousHighGoal extends LinearOpMode {
         leftFrontMotor.setPower(-1);
         rightFrontMotor.setPower(1);
 
-        while(leftBackMotor.isBusy() && rightBackMotor.isBusy() && leftFrontMotor.isBusy() && rightFrontMotor.isBusy()) {
-            // Continue
+        while(leftBackMotor.isBusy() || rightBackMotor.isBusy() || leftFrontMotor.isBusy() || rightFrontMotor.isBusy()) {
+            //continue
         }
         stopRobot();
     }
 
     private void rightRobot(double inches){
-        int inchesEncoderValue = (int)((inches/(Math.PI*98))*(20))/28;
-        double motorEncoderValue = (leftBackMotor.getCurrentPosition())*-1;
+        int inchesEncoderValue = (int)((inches*(Math.PI*4))*(20)/28); //(((inches/circumference)*gearingRatio))/28; must be fixed later
+        double motorEncoderValue = leftBackMotor.getCurrentPosition();
         resetEncoders();
 
-        rightBackMotor.setTargetPosition((inchesEncoderValue));
-        leftBackMotor.setTargetPosition(inchesEncoderValue);
+        leftBackMotor.setTargetPosition((inchesEncoderValue));
+        rightBackMotor.setTargetPosition(inchesEncoderValue);
+        leftFrontMotor.setTargetPosition(inchesEncoderValue);
+        rightFrontMotor.setTargetPosition(inchesEncoderValue);
 
         leftBackMotor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
         rightBackMotor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
@@ -191,8 +208,8 @@ public class BoomerangAutonomousHighGoal extends LinearOpMode {
         leftFrontMotor.setPower(1);
         rightFrontMotor.setPower(-1);
 
-        while(leftBackMotor.isBusy() && rightBackMotor.isBusy() && leftFrontMotor.isBusy() && rightFrontMotor.isBusy()) {
-            // Continue
+        while(leftBackMotor.isBusy() || rightBackMotor.isBusy() || leftFrontMotor.isBusy() || rightFrontMotor.isBusy()) {
+            //continue
         }
         stopRobot();
     }
@@ -209,12 +226,14 @@ public class BoomerangAutonomousHighGoal extends LinearOpMode {
     }
 
     private void rotateRobot(double degrees){
-        int degreesEncoderValue = (int)((degrees/(Math.PI*98))*(20))/28; //must be fixed later
+        int degreesEncoderValue = (int)((degrees/(Math.PI*4))*(20)/28); //must be fixed later
         double motorEncoderValue = (leftBackMotor.getCurrentPosition())*-1;
         resetEncoders();
 
         leftBackMotor.setTargetPosition((degreesEncoderValue));
         rightBackMotor.setTargetPosition(degreesEncoderValue);
+        leftFrontMotor.setTargetPosition(degreesEncoderValue);
+        rightFrontMotor.setTargetPosition(degreesEncoderValue);
 
         leftBackMotor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
         rightBackMotor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
@@ -227,8 +246,8 @@ public class BoomerangAutonomousHighGoal extends LinearOpMode {
         leftFrontMotor.setPower(1);
         rightFrontMotor.setPower(-1);
 
-        while(leftBackMotor.isBusy() && rightBackMotor.isBusy() && leftFrontMotor.isBusy() && rightFrontMotor.isBusy()) {
-            // Continue
+        while(leftBackMotor.isBusy() || rightBackMotor.isBusy() || leftFrontMotor.isBusy() || rightFrontMotor.isBusy()) {
+            //continue
         }
         stopRobot();
     }
@@ -243,10 +262,6 @@ public class BoomerangAutonomousHighGoal extends LinearOpMode {
         }
         stopRobot();
     }
-
-
-
-
 
     /* private void wobbleGoalAction() {
             leftRobot(3);
