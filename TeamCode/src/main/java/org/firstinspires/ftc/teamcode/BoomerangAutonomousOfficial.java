@@ -42,8 +42,8 @@ import com.qualcomm.robotcore.util.Range;
 import java.lang.Math.*;
 
 
-@Autonomous(name="BoomerangAutonomousHighGoal")
-public class BoomerangAutonomousHighGoal extends LinearOpMode {
+@Autonomous(name="BoomerangAutonomousOfficial")
+public class BoomerangAutonomousOfficial extends LinearOpMode {
     private final ElapsedTime runtime = new ElapsedTime();
     private CRServoImpl wobbleClawServo = null;
     DcMotor leftBackMotor = null;
@@ -60,6 +60,41 @@ public class BoomerangAutonomousHighGoal extends LinearOpMode {
         shoot();
         forwardRobot(21);
     }
+
+    private void powerShotAction() {
+        leftRobot(20.25);
+        forwardRobot(54);
+        shoot();
+        rotateRobot(5.95); // rotate counterclockwise, make negative if needed
+        shoot();
+        rotateRobot(5.81); // rotate counterclockwise, make negative if needed
+        shoot();
+        rotateRobot(11.76); // rotate clockwise, make negative if needed
+        forwardRobot(16);
+    }
+
+    /* private void wobbleGoalAction() {
+            leftRobot(3);
+            forwardRobot(18);
+            //sense for # of rings
+            leftRobot(21);
+            forwardRobot(36);
+            rightRobot(21);
+            shoot();
+            rightRobot(3);
+            forwardRobot(24);
+            // if A:
+            rotateRobot(180); // rotate clockwise, make negative if needed
+            wobbleClawServo.setPower(-1); // drop wobble goal
+            //if B:
+            rotateRobot(90); // rotate clockwise, make negative if needed
+            wobbleClawServo.setPower(-1); // drop wobble goal
+            //if C:
+            forwardRobot(36);
+            rotateRobot(-180); // rotate clockwise, make negative if needed
+            wobbleClawServo.setPower(-1); // drop wobble goal
+            forwardRobot(36);
+    } */
 
     @Override
     public void runOpMode() {
@@ -95,7 +130,8 @@ public class BoomerangAutonomousHighGoal extends LinearOpMode {
 
         while(opModeIsActive()) {
             highGoalAction();
-            //wobbleGoalAction();
+            // wobbleGoalAction();
+            // powerShotAction();
             break;
         }
     }
@@ -105,9 +141,9 @@ public class BoomerangAutonomousHighGoal extends LinearOpMode {
         leftFrontMotor.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
         rightBackMotor.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
         rightFrontMotor.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
-        conveyorBeltMotor.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
         conveyorBeltL.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
         conveyorBeltR.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+        conveyorBeltMotor.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
 
         leftBackMotor.setPower(0);
         leftFrontMotor.setPower(0);
@@ -274,27 +310,4 @@ public class BoomerangAutonomousHighGoal extends LinearOpMode {
         }
         stopRobot();
     }
-
-    /* private void wobbleGoalAction() {
-            leftRobot(3);
-            forwardRobot(18);
-            //sense for # of rings
-            leftRobot(21);
-            forwardRobot(36);
-            rightRobot(21);
-            shoot();
-            rightRobot(3);
-            forwardRobot(24);
-            // if A:
-            rotateRobot(180);
-            wobbleClawServo.setPower(-1); // drop wobble goal
-            //if B:
-            rotateRobot(90);
-            wobbleClawServo.setPower(-1); // drop wobble goal
-            //if C:
-            forwardRobot(36);
-            rotateRobot(-180);
-            wobbleClawServo.setPower(-1); // drop wobble goal
-            forwardRobot(36);
-        } */
 }

@@ -26,7 +26,7 @@ public class BoomerangTeleOp extends OpMode
     private DcMotor shooterMotor = null;
     private CRServoImpl wobbleArmServo = null;
     private CRServoImpl wobbleClawServo = null;
-    //Power variables
+    // Power variables
     double leftFrontPower;
     double rightFrontPower;
     double leftBackPower;
@@ -118,10 +118,10 @@ public class BoomerangTeleOp extends OpMode
             rightBackPower *= .25;
         }
         if(!slowMode){
-            leftFrontPower *= .8;
-            rightFrontPower *= .8;
-            leftBackPower *= .8;
-            rightBackPower *= .8;
+            leftFrontPower *= .55;
+            rightFrontPower *= .55;
+            leftBackPower *= .55;
+            rightBackPower *= .55;
         }
 
 
@@ -201,5 +201,4 @@ public class BoomerangTeleOp extends OpMode
         rightBackDrive.setPower(0);
         rightFrontDrive.setPower(0);
     }
-
 }

@@ -14,7 +14,7 @@ import org.firstinspires.ftc.robotcore.external.navigation.VuforiaLocalizer;
 import org.firstinspires.ftc.robotcore.external.tfod.TFObjectDetector;
 
 @Autonomous(name="red right inner wobble goal high goal", group="Linear Opmode")
-public class BoomerangAuton extends LinearOpMode {
+public class BoomerangAutonomous extends LinearOpMode {
 
     private ElapsedTime runtime = new ElapsedTime();
     private DcMotor leftFrontDrive = null;
