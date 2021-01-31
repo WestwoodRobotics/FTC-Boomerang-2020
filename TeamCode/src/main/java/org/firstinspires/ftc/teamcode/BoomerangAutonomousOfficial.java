@@ -61,7 +61,7 @@ public class BoomerangAutonomousOfficial extends LinearOpMode {
         forwardRobot(21);
     }
 
-    private void powerShotAction() {
+    /* private void powerShotAction() {
         leftRobot(20.25);
         forwardRobot(54);
         shoot();
@@ -71,7 +71,7 @@ public class BoomerangAutonomousOfficial extends LinearOpMode {
         shoot();
         rotateRobot(11.76); // rotate clockwise, make negative if needed
         forwardRobot(16);
-    }
+    } */
 
     /* private void wobbleGoalAction() {
             leftRobot(3);
