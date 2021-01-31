@@ -1,3 +1,5 @@
+// THIS PROGRAM IS CURRENTLY NOT IN USE, DO NOT USE THIS PROGRAM FOR AUTONOMOUS!
+
 package org.firstinspires.ftc.teamcode;
 
 import com.qualcomm.robotcore.hardware.DcMotor;
@@ -192,7 +194,7 @@ public class AutonFunctionsP {
         rightBackDrive.setPower(1);
 
         while(leftFrontDrive.isBusy() && rightFrontDrive.isBusy() && leftBackDrive.isBusy()
-        && rightBackDrive.isBusy()){}
+                && rightBackDrive.isBusy()){}
 
         stop();
 
@@ -217,21 +219,20 @@ public class AutonFunctionsP {
         }
     }
 
-     public void senseRings(){
-         List<Recognition> updatedRecognitions = tfod.getUpdatedRecognitions();
-         if (updatedRecognitions != null) {
-             for (Recognition recognition : updatedRecognitions) {
-             }
-         }
-         else{
-             ringLocation = 0;
-         }
-     }
+    public void senseRings(){
+        List<Recognition> updatedRecognitions = tfod.getUpdatedRecognitions();
+        if (updatedRecognitions != null) {
+            for (Recognition recognition : updatedRecognitions) {
+            }
+        }
+        else{
+            ringLocation = 0;
+        }
+    }
     public void stop(){
         leftBackDrive.setPower(0);
         leftFrontDrive.setPower(0);
         rightBackDrive.setPower(0);
         rightFrontDrive.setPower(0);
     }
-
 }
