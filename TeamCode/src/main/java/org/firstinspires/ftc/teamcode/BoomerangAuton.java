@@ -161,7 +161,7 @@ public class BoomerangAuton extends LinearOpMode {
     }
 
     private void forwardRobot(double inches) {
-        double inchesEncoderValue = Math.round(inches*118.81);
+        double inchesEncoderValue = Math.round(inches*((28*20)/(2*Math.PI*(49/25.4)))); //Formula for Encoder Ticks per Revolution = (encoderTicksPerRevolution*gearingRatio)/circumference, circumference = 2*pi*radius
         int encoderValueRounded = (int) inchesEncoderValue;
         resetEncoders();
 
@@ -190,7 +190,7 @@ public class BoomerangAuton extends LinearOpMode {
     }
 
     private void backwardRobot(double inches) {
-        double inchesEncoderValue = Math.round(inches*118.81);
+        double inchesEncoderValue = Math.round(inches*((28*20)/(2*Math.PI*(49/25.4)))); //Formula for Encoder Ticks per Revolution = (encoderTicksPerRevolution*gearingRatio)/circumference, circumference = 2*pi*radius
         int encoderValueRounded = (int) inchesEncoderValue;
         resetEncoders();
 
@@ -216,7 +216,7 @@ public class BoomerangAuton extends LinearOpMode {
     }
 
     private void leftRobot(double inches){
-        double inchesEncoderValue = Math.round(inches*118.81);
+        double inchesEncoderValue = Math.round(inches*((28*20)/(2*Math.PI*(49/25.4)))); //Formula for Encoder Ticks per Revolution = (encoderTicksPerRevolution*gearingRatio)/circumference, circumference = 2*pi*radius
         int encoderValueRounded = (int) inchesEncoderValue;
         resetEncoders();
 
@@ -242,7 +242,7 @@ public class BoomerangAuton extends LinearOpMode {
     }
 
     private void rightRobot(double inches){
-        double inchesEncoderValue = Math.round(inches*118.81);
+        double inchesEncoderValue = Math.round(inches*((28*20)/(2*Math.PI*(49/25.4)))); //Formula for Encoder Ticks per Revolution = (encoderTicksPerRevolution*gearingRatio)/circumference, circumference = 2*pi*radius
         int encoderValueRounded = (int) inchesEncoderValue;
         resetEncoders();
 
@@ -280,7 +280,7 @@ public class BoomerangAuton extends LinearOpMode {
     }
 
     private void rotateRobot(double degrees){
-        double degreesEncoderValue = Math.round(degrees*118.81);
+        double degreesEncoderValue = Math.round(degrees*((28*20)/(2*Math.PI*(49/25.4)))); //Formula for Encoder Ticks per Revolution = (encoderTicksPerRevolution*gearingRatio)/circumference, circumference = 2*pi*radius
         int encoderValueRounded = (int) degreesEncoderValue;
         resetEncoders();
 
