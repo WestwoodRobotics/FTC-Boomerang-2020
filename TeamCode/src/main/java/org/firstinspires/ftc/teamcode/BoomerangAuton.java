@@ -35,6 +35,7 @@ robot during the Autonomous Period of the FTC Ultimate Goal competition. */
 package org.firstinspires.ftc.teamcode;
 
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
+import com.qualcomm.robotcore.robot.Robot;
 import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
@@ -55,9 +56,9 @@ public class BoomerangAuton extends LinearOpMode {
     DcMotor rightBackMotor = null;
     DcMotor leftFrontMotor = null;
     DcMotor rightFrontMotor = null;
-    DcMotor conveyorBeltMotor = null;
-    DcMotor conveyorBeltL = null;
-    DcMotor conveyorBeltR = null;
+    DcMotor shooter = null;
+    private CRServoImpl conveyorBeltL = null;
+    private CRServoImpl conveyorBeltR = null;
 
     private void highGoalAction() {
         forwardRobot(21);
@@ -113,9 +114,9 @@ public class BoomerangAuton extends LinearOpMode {
         rightBackMotor = hardwareMap.get(DcMotor.class, "rightFront");
         leftFrontMotor = hardwareMap.get(DcMotor.class, "leftBack");
         rightFrontMotor = hardwareMap.get(DcMotor.class, "rightBack");
-        conveyorBeltL = hardwareMap.get(DcMotor.class, "conveyorL");
-        conveyorBeltR = hardwareMap.get(DcMotor.class, "conveyorR");
-        conveyorBeltMotor = hardwareMap.get(DcMotor.class, "shooter");
+        conveyorBeltL = hardwareMap.get(CRServoImpl.class, "conveyorL");
+        conveyorBeltR = hardwareMap.get(CRServoImpl.class, "conveyorR");
+        shooter = hardwareMap.get(DcMotor.class, "shooter");
         wobbleClawServo = hardwareMap.get(CRServoImpl.class, "wobbleClaw");
         // Most robots need the motor on one side to be reversed to drive forward
         // Reverse the motor that runs backwards when connected directly to the battery
@@ -125,7 +126,7 @@ public class BoomerangAuton extends LinearOpMode {
         rightBackMotor.setDirection(DcMotor.Direction.FORWARD);
         conveyorBeltL.setDirection(DcMotor.Direction.FORWARD);
         conveyorBeltR.setDirection(DcMotor.Direction.FORWARD);
-        conveyorBeltMotor.setDirection(DcMotor.Direction.FORWARD);
+        shooter.setDirection(DcMotor.Direction.FORWARD);
         wobbleClawServo.setDirection(CRServoImpl.Direction.FORWARD);
 
         stopRobot();
@@ -146,9 +147,7 @@ public class BoomerangAuton extends LinearOpMode {
         leftFrontMotor.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
         rightBackMotor.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
         rightFrontMotor.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
-        conveyorBeltL.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
-        conveyorBeltR.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
-        conveyorBeltMotor.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+        shooter.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
 
         leftBackMotor.setPower(0);
         leftFrontMotor.setPower(0);
@@ -156,7 +155,7 @@ public class BoomerangAuton extends LinearOpMode {
         rightFrontMotor.setPower(0);
         conveyorBeltL.setPower(0);
         conveyorBeltR.setPower(0);
-        conveyorBeltMotor.setPower(0);
+        shooter.setPower(0);
         wobbleClawServo.setPower(0);
     }
 
@@ -215,7 +214,7 @@ public class BoomerangAuton extends LinearOpMode {
         stopRobot();
     }
 
-    private void leftRobot(double inches){
+    private void rightRobot(double inches){
         double inchesEncoderValue = Math.round(inches*((28*20)/(2*Math.PI*(49/25.4)))); //Formula for Encoder Ticks per Revolution = (encoderTicksPerRevolution*gearingRatio)/circumference, circumference = 2*pi*radius
         int encoderValueRounded = (int) inchesEncoderValue;
         resetEncoders();
@@ -241,7 +240,7 @@ public class BoomerangAuton extends LinearOpMode {
         stopRobot();
     }
 
-    private void rightRobot(double inches){
+    private void leftRobot(double inches){
         double inchesEncoderValue = Math.round(inches*((28*20)/(2*Math.PI*(49/25.4)))); //Formula for Encoder Ticks per Revolution = (encoderTicksPerRevolution*gearingRatio)/circumference, circumference = 2*pi*radius
         int encoderValueRounded = (int) inchesEncoderValue;
         resetEncoders();
@@ -310,7 +309,7 @@ public class BoomerangAuton extends LinearOpMode {
         while (getRuntime() < 10) {
             conveyorBeltR.setPower(1);
             conveyorBeltL.setPower(1);
-            conveyorBeltMotor.setPower(1);
+            shooter.setPower(1);
             getRuntime();
         }
         stopRobot();
