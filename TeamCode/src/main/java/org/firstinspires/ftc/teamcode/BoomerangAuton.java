@@ -183,7 +183,7 @@ public class BoomerangAuton extends LinearOpMode {
         telemetry.addData("leftBack", (inchesEncoderValue));
         telemetry.update();
 
-        while(leftBackMotor.isBusy() || rightBackMotor.isBusy() || leftFrontMotor.isBusy() || rightFrontMotor.isBusy()) {
+        while(leftBackMotor.isBusy() && rightBackMotor.isBusy() && leftFrontMotor.isBusy() && rightFrontMotor.isBusy()) {
             //continue
         }
         stopRobot();
@@ -209,7 +209,7 @@ public class BoomerangAuton extends LinearOpMode {
         leftFrontMotor.setPower(-1);
         rightFrontMotor.setPower(-1);
 
-        while(leftBackMotor.isBusy() || rightBackMotor.isBusy() || leftFrontMotor.isBusy() || rightFrontMotor.isBusy()) {
+        while(leftBackMotor.isBusy() && rightBackMotor.isBusy() && leftFrontMotor.isBusy() && rightFrontMotor.isBusy()) {
             //continue
         }
         stopRobot();
@@ -235,7 +235,7 @@ public class BoomerangAuton extends LinearOpMode {
         leftFrontMotor.setPower(-1);
         rightFrontMotor.setPower(1);
 
-        while(leftBackMotor.isBusy() || rightBackMotor.isBusy() || leftFrontMotor.isBusy() || rightFrontMotor.isBusy()) {
+        while(leftBackMotor.isBusy() && rightBackMotor.isBusy() && leftFrontMotor.isBusy() && rightFrontMotor.isBusy()) {
             //continue
         }
         stopRobot();
@@ -261,7 +261,7 @@ public class BoomerangAuton extends LinearOpMode {
         leftFrontMotor.setPower(1);
         rightFrontMotor.setPower(-1);
 
-        while(leftBackMotor.isBusy() || rightBackMotor.isBusy() || leftFrontMotor.isBusy() || rightFrontMotor.isBusy()) {
+        while(leftBackMotor.isBusy() && rightBackMotor.isBusy() && leftFrontMotor.isBusy() && rightFrontMotor.isBusy()) {
             //continue
         }
         stopRobot();
@@ -299,7 +299,7 @@ public class BoomerangAuton extends LinearOpMode {
         leftFrontMotor.setPower(1);
         rightFrontMotor.setPower(-1);
 
-        while(leftBackMotor.isBusy() || rightBackMotor.isBusy() || leftFrontMotor.isBusy() || rightFrontMotor.isBusy()) {
+        while(leftBackMotor.isBusy() && rightBackMotor.isBusy() && leftFrontMotor.isBusy() && rightFrontMotor.isBusy()) {
             //continue
         }
         stopRobot();
