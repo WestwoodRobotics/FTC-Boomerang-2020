@@ -35,6 +35,8 @@ robot during the Autonomous Period of the FTC Ultimate Goal competition. */
 package org.firstinspires.ftc.teamcode;
 
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
+import com.qualcomm.robotcore.hardware.CRServo;
+import com.qualcomm.robotcore.hardware.Servo;
 import com.qualcomm.robotcore.robot.Robot;
 import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
@@ -51,14 +53,14 @@ import java.lang.Math.*;
 @Autonomous(name="BoomerangAuton")
 public class BoomerangAuton extends LinearOpMode {
     private final ElapsedTime runtime = new ElapsedTime();
-    private CRServoImpl wobbleClawServo = null;
+    CRServoImpl wobbleClawServo = null;
     DcMotor leftBackMotor = null;
     DcMotor rightBackMotor = null;
     DcMotor leftFrontMotor = null;
     DcMotor rightFrontMotor = null;
     DcMotor shooter = null;
-    private CRServoImpl conveyorBeltL = null;
-    private CRServoImpl conveyorBeltR = null;
+    DcMotor conveyorBeltL = null;
+    DcMotor conveyorBeltR = null;
 
     private void highGoalAction() {
         forwardRobot(21);
@@ -80,26 +82,26 @@ public class BoomerangAuton extends LinearOpMode {
     } */
 
     /* private void wobbleGoalAction() {
-            leftRobot(3);
-            forwardRobot(18);
-            //sense for # of rings
-            leftRobot(21);
-            forwardRobot(36);
-            rightRobot(21);
-            shoot();
-            rightRobot(3);
-            forwardRobot(24);
-            // if A:
-            rotateRobot(180); // rotate clockwise, make negative if needed
-            wobbleClawServo.setPower(-1); // drop wobble goal
-            //if B:
-            rotateRobot(90); // rotate clockwise, make negative if needed
-            wobbleClawServo.setPower(-1); // drop wobble goal
-            //if C:
-            forwardRobot(36);
-            rotateRobot(-180); // rotate clockwise, make negative if needed
-            wobbleClawServo.setPower(-1); // drop wobble goal
-            forwardRobot(36);
+        leftRobot(3);
+        forwardRobot(18);
+        //sense for # of rings
+        leftRobot(21);
+        forwardRobot(36);
+        rightRobot(21);
+        shoot();
+        rightRobot(3);
+        forwardRobot(24);
+        // if A:
+        rotateRobot(180); // rotate clockwise, make negative if needed
+        wobbleClawServo.setPower(-1); // drop wobble goal
+        //if B:
+        rotateRobot(90); // rotate clockwise, make negative if needed
+        wobbleClawServo.setPower(-1); // drop wobble goal
+        //if C:
+        forwardRobot(36);
+        rotateRobot(-180); // rotate clockwise, make negative if needed
+        wobbleClawServo.setPower(-1); // drop wobble goal
+        forwardRobot(36);
     } */
 
     @Override
@@ -114,8 +116,8 @@ public class BoomerangAuton extends LinearOpMode {
         rightBackMotor = hardwareMap.get(DcMotor.class, "rightFront");
         leftFrontMotor = hardwareMap.get(DcMotor.class, "leftBack");
         rightFrontMotor = hardwareMap.get(DcMotor.class, "rightBack");
-        conveyorBeltL = hardwareMap.get(CRServoImpl.class, "conveyorL");
-        conveyorBeltR = hardwareMap.get(CRServoImpl.class, "conveyorR");
+        conveyorBeltL = hardwareMap.get(DcMotor.class, "conveyorL");
+        conveyorBeltR = hardwareMap.get(DcMotor.class, "conveyorR");
         shooter = hardwareMap.get(DcMotor.class, "shooter");
         wobbleClawServo = hardwareMap.get(CRServoImpl.class, "wobbleClaw");
         // Most robots need the motor on one side to be reversed to drive forward

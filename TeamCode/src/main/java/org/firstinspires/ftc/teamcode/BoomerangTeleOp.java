@@ -56,8 +56,8 @@ public class BoomerangTeleOp extends OpMode
     private boolean slowMode = false;
     private DcMotor roller = null;
     private boolean isIntakeRunning = false;
-    private CRServoImpl conveyorBeltL = null;
-    private CRServoImpl conveyorBeltR = null;
+    private DcMotor conveyorBeltL = null;
+    private DcMotor conveyorBeltR = null;
     private DcMotor shooterMotor = null;
     private CRServoImpl wobbleArmServo = null;
     private CRServoImpl wobbleClawServo = null;
@@ -83,8 +83,8 @@ public class BoomerangTeleOp extends OpMode
         leftBackDrive  = hardwareMap.get(DcMotor.class, "leftBack");
         rightBackDrive = hardwareMap.get(DcMotor.class, "rightBack");
         roller = hardwareMap.get(DcMotor.class, "roller");
-        conveyorBeltL = hardwareMap.get(CRServoImpl.class, "conveyorL");
-        conveyorBeltR = hardwareMap.get(CRServoImpl.class, "conveyorR");
+        conveyorBeltL = hardwareMap.get(DcMotor.class, "conveyorL");
+        conveyorBeltR = hardwareMap.get(DcMotor.class, "conveyorR");
         shooterMotor = hardwareMap.get(DcMotor.class, "shooter");
         wobbleArmServo = hardwareMap.get(CRServoImpl.class, "wobbleArm");
         wobbleClawServo = hardwareMap.get(CRServoImpl.class, "wobbleClaw");
