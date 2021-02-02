@@ -35,20 +35,16 @@ Goal Competition. */
 
 package org.firstinspires.ftc.teamcode;
 
-import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
-import com.qualcomm.robotcore.hardware.CRServoImpl;
+import com.qualcomm.robotcore.hardware.CRServo;
 import com.qualcomm.robotcore.hardware.DcMotor;
-import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.robotcore.util.ElapsedTime;
-import com.qualcomm.robotcore.util.Range;
 
-@TeleOp(name="BoomerangTeleOp", group="Iterative Opmode")
+@TeleOp(name = "BoomerangTeleOp", group = "Iterative Opmode")
 
-public class BoomerangTeleOp extends OpMode
-{
-    private ElapsedTime runtime = new ElapsedTime();
+public class BoomerangTeleOp extends OpMode {
+    private final ElapsedTime runtime = new ElapsedTime();
     private DcMotor leftFrontDrive = null;
     private DcMotor rightFrontDrive = null;
     private DcMotor rightBackDrive = null;
@@ -56,11 +52,11 @@ public class BoomerangTeleOp extends OpMode
     private boolean slowMode = false;
     private DcMotor roller = null;
     private boolean isIntakeRunning = false;
-    private DcMotor conveyorBeltL = null;
-    private DcMotor conveyorBeltR = null;
+    private CRServo conveyorBeltL = null;
+    private CRServo conveyorBeltR = null;
     private DcMotor shooterMotor = null;
-    private CRServoImpl wobbleArmServo = null;
-    private CRServoImpl wobbleClawServo = null;
+    private CRServo wobbleArmServo = null;
+    private CRServo wobbleClawServo = null;
     // Power variables
     double leftFrontPower;
     double rightFrontPower;
@@ -78,32 +74,31 @@ public class BoomerangTeleOp extends OpMode
         telemetry.addData("Status", "Initialized");
 
 
-        leftFrontDrive  = hardwareMap.get(DcMotor.class, "leftFront");
+        leftFrontDrive = hardwareMap.get(DcMotor.class, "leftFront");
         rightFrontDrive = hardwareMap.get(DcMotor.class, "rightFront");
-        leftBackDrive  = hardwareMap.get(DcMotor.class, "leftBack");
+        leftBackDrive = hardwareMap.get(DcMotor.class, "leftBack");
         rightBackDrive = hardwareMap.get(DcMotor.class, "rightBack");
         roller = hardwareMap.get(DcMotor.class, "roller");
-        conveyorBeltL = hardwareMap.get(DcMotor.class, "conveyorL");
-        conveyorBeltR = hardwareMap.get(DcMotor.class, "conveyorR");
+        conveyorBeltL = hardwareMap.get(CRServo.class, "conveyorL");
+        conveyorBeltR = hardwareMap.get(CRServo.class, "conveyorR");
         shooterMotor = hardwareMap.get(DcMotor.class, "shooter");
-        wobbleArmServo = hardwareMap.get(CRServoImpl.class, "wobbleArm");
-        wobbleClawServo = hardwareMap.get(CRServoImpl.class, "wobbleClaw");
+        wobbleArmServo = hardwareMap.get(CRServo.class, "wobbleArm");
+        wobbleClawServo = hardwareMap.get(CRServo.class, "wobbleClaw");
 
         leftFrontDrive.setDirection(DcMotor.Direction.REVERSE);
         rightFrontDrive.setDirection(DcMotor.Direction.FORWARD);
         leftBackDrive.setDirection(DcMotor.Direction.REVERSE);
         rightBackDrive.setDirection(DcMotor.Direction.FORWARD);
         roller.setDirection(DcMotor.Direction.FORWARD);
-        conveyorBeltL.setDirection(DcMotor.Direction.FORWARD);
-        conveyorBeltR.setDirection(DcMotor.Direction.FORWARD);
+        conveyorBeltL.setDirection(CRServo.Direction.FORWARD);
+        conveyorBeltR.setDirection(CRServo.Direction.FORWARD);
         shooterMotor.setDirection(DcMotor.Direction.FORWARD);
-        wobbleArmServo.setDirection(CRServoImpl.Direction.FORWARD);
-        wobbleClawServo.setDirection(CRServoImpl.Direction.FORWARD);
+        wobbleArmServo.setDirection(CRServo.Direction.FORWARD);
+        wobbleClawServo.setDirection(CRServo.Direction.FORWARD);
 
         telemetry.addData("Status", "Initialized");
         telemetry.update();
     }
-
 
 
     @Override
@@ -117,42 +112,40 @@ public class BoomerangTeleOp extends OpMode
 
         turn = gamepad1.right_stick_x;
 
-        rightFrontPower = -gamepad1.left_stick_y - gamepad1.left_stick_x -turn;
-        rightBackPower = -gamepad1.left_stick_y + gamepad1.left_stick_x -turn;
-        leftFrontPower =-gamepad1.left_stick_y + gamepad1.left_stick_x +turn;
-        leftBackPower = -gamepad1.left_stick_y - gamepad1.left_stick_x +turn;
-
+        rightFrontPower = -gamepad1.left_stick_y - gamepad1.left_stick_x - turn;
+        rightBackPower = -gamepad1.left_stick_y + gamepad1.left_stick_x - turn;
+        leftFrontPower = -gamepad1.left_stick_y + gamepad1.left_stick_x + turn;
+        leftBackPower = -gamepad1.left_stick_y - gamepad1.left_stick_x + turn;
 
 
         maxPower = Math.abs(rightFrontPower);
-        if(Math.abs(rightBackPower)>maxPower){
+        if (Math.abs(rightBackPower) > maxPower) {
             maxPower = rightBackPower;
         }
-        if(Math.abs(leftBackPower)>maxPower){
+        if (Math.abs(leftBackPower) > maxPower) {
             maxPower = leftBackPower;
         }
-        if(Math.abs(leftFrontPower)>maxPower){
+        if (Math.abs(leftFrontPower) > maxPower) {
             maxPower = leftFrontPower;
         }
-        if(maxPower>1){
-            rightFrontPower/=maxPower;
-            leftFrontPower/=maxPower;
-            rightBackPower/=maxPower;
-            leftBackPower/=maxPower;
+        if (maxPower > 1) {
+            rightFrontPower /= maxPower;
+            leftFrontPower /= maxPower;
+            rightBackPower /= maxPower;
+            leftBackPower /= maxPower;
         }
-        if(gamepad1.dpad_up){
+        if (gamepad1.dpad_up) {
             slowMode = false;
-        }
-        else if(gamepad1.dpad_down){
+        } else if (gamepad1.dpad_down) {
             slowMode = true;
         }
-        if(slowMode){
+        if (slowMode) {
             leftFrontPower *= .25;
             rightFrontPower *= .25;
             leftBackPower *= .25;
             rightBackPower *= .25;
         }
-        if(!slowMode){
+        if (!slowMode) {
             leftFrontPower *= .6;
             rightFrontPower *= .6;
             leftBackPower *= .6;
@@ -168,35 +161,32 @@ public class BoomerangTeleOp extends OpMode
         double rollerPower;
 
 
-        if(gamepad2.a){
+        if (gamepad2.a) {
             isIntakeRunning = true;
         }
-        if(gamepad2.b){
+        if (gamepad2.b) {
             isIntakeRunning = false;
         }
-        if(isIntakeRunning){
+        if (isIntakeRunning) {
             rollerPower = 1;
-        }
-        else{
+        } else {
             rollerPower = 0;
         }
 
         roller.setPower(rollerPower);
 
-        if(gamepad2.right_bumper){
+        if (gamepad2.right_bumper) {
             conveyorPower = 1;
-        }
-        else{
+        } else {
             conveyorPower = 0;
         }
 
         conveyorBeltL.setPower(conveyorPower);
         conveyorBeltR.setPower(conveyorPower);
 
-        if(gamepad2.right_trigger != 0){
-            shooterPower= 1;
-        }
-        else{
+        if (gamepad2.right_trigger != 0) {
+            shooterPower = 1;
+        } else {
             shooterPower = 0;
         }
 
@@ -206,13 +196,11 @@ public class BoomerangTeleOp extends OpMode
         wobbleArmPower = -gamepad2.left_stick_y;
 
         //Same as before, add if statement to prevent servo angle from going too far.
-        if(gamepad2.x){
+        if (gamepad2.x) {
             wobbleClawPower = 1;
-        }
-        else if(gamepad2.y){
+        } else if (gamepad2.y) {
             wobbleClawPower = -1;
-        }
-        else{
+        } else {
             wobbleClawPower = 0;
         }
 
