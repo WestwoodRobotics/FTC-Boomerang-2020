@@ -52,8 +52,8 @@ public class BoomerangTeleOp extends OpMode {
     private boolean slowMode = false;
     private DcMotor roller = null;
     private boolean isIntakeRunning = false;
-    private CRServo conveyorBeltL = null;
-    private CRServo conveyorBeltR = null;
+    private DcMotor conveyorBeltL = null;
+    private DcMotor conveyorBeltR = null;
     private DcMotor shooterMotor = null;
     private CRServo wobbleArmServo = null;
     private CRServo wobbleClawServo = null;
@@ -79,8 +79,8 @@ public class BoomerangTeleOp extends OpMode {
         leftBackDrive = hardwareMap.get(DcMotor.class, "leftBack");
         rightBackDrive = hardwareMap.get(DcMotor.class, "rightBack");
         roller = hardwareMap.get(DcMotor.class, "roller");
-        conveyorBeltL = hardwareMap.get(CRServo.class, "conveyorL");
-        conveyorBeltR = hardwareMap.get(CRServo.class, "conveyorR");
+        conveyorBeltL = hardwareMap.get(DcMotor.class, "conveyorL");
+        conveyorBeltR = hardwareMap.get(DcMotor.class, "conveyorR");
         shooterMotor = hardwareMap.get(DcMotor.class, "shooter");
         wobbleArmServo = hardwareMap.get(CRServo.class, "wobbleArm");
         wobbleClawServo = hardwareMap.get(CRServo.class, "wobbleClaw");
@@ -90,8 +90,8 @@ public class BoomerangTeleOp extends OpMode {
         leftBackDrive.setDirection(DcMotor.Direction.REVERSE);
         rightBackDrive.setDirection(DcMotor.Direction.FORWARD);
         roller.setDirection(DcMotor.Direction.FORWARD);
-        conveyorBeltL.setDirection(CRServo.Direction.FORWARD);
-        conveyorBeltR.setDirection(CRServo.Direction.FORWARD);
+        conveyorBeltL.setDirection(DcMotor.Direction.FORWARD);
+        conveyorBeltR.setDirection(DcMotor.Direction.REVERSE);
         shooterMotor.setDirection(DcMotor.Direction.FORWARD);
         wobbleArmServo.setDirection(CRServo.Direction.FORWARD);
         wobbleClawServo.setDirection(CRServo.Direction.FORWARD);
@@ -176,7 +176,7 @@ public class BoomerangTeleOp extends OpMode {
         roller.setPower(rollerPower);
 
         if (gamepad2.right_bumper) {
-            conveyorPower = 1;
+            conveyorPower = 0.5;
         } else {
             conveyorPower = 0;
         }

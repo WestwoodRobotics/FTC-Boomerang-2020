@@ -52,15 +52,16 @@ public class BoomerangAuton extends LinearOpMode {
     DcMotor leftFrontMotor = null;
     DcMotor rightFrontMotor = null;
     DcMotor shooter = null;
-    CRServo conveyorBeltL = null;
-    CRServo conveyorBeltR = null;
+    DcMotor conveyorBeltL = null;
+    DcMotor conveyorBeltR = null;
     DcMotor roller = null;
 
     private void highGoalAction() {
         forwardRobot(21);
         leftRobot(21);
-        shoot();
         forwardRobot(21);
+        shoot();
+        forwardRobot(17.5);
     }
 
     /* private void powerShotAction() {
@@ -110,8 +111,8 @@ public class BoomerangAuton extends LinearOpMode {
         rightBackMotor = hardwareMap.get(DcMotor.class, "rightFront");
         leftFrontMotor = hardwareMap.get(DcMotor.class, "leftBack");
         rightFrontMotor = hardwareMap.get(DcMotor.class, "rightBack");
-        conveyorBeltL = hardwareMap.get(CRServo.class, "conveyorL");
-        conveyorBeltR = hardwareMap.get(CRServo.class, "conveyorR");
+        conveyorBeltL = hardwareMap.get(DcMotor.class, "conveyorL");
+        conveyorBeltR = hardwareMap.get(DcMotor.class, "conveyorR");
         shooter = hardwareMap.get(DcMotor.class, "shooter");
         wobbleClawServo = hardwareMap.get(CRServo.class, "wobbleClaw");
         wobbleArmServo = hardwareMap.get(CRServo.class, "wobbleArm");
@@ -122,8 +123,8 @@ public class BoomerangAuton extends LinearOpMode {
         rightFrontMotor.setDirection(DcMotor.Direction.FORWARD);
         leftBackMotor.setDirection(DcMotor.Direction.REVERSE);
         rightBackMotor.setDirection(DcMotor.Direction.FORWARD);
-        conveyorBeltL.setDirection(CRServo.Direction.FORWARD);
-        conveyorBeltR.setDirection(CRServo.Direction.FORWARD);
+        conveyorBeltL.setDirection(DcMotor.Direction.FORWARD);
+        conveyorBeltR.setDirection(DcMotor.Direction.REVERSE);
         shooter.setDirection(DcMotor.Direction.FORWARD);
         wobbleClawServo.setDirection(CRServo.Direction.FORWARD);
         wobbleArmServo.setDirection(CRServo.Direction.FORWARD);
@@ -311,8 +312,8 @@ public class BoomerangAuton extends LinearOpMode {
     private void shoot() {
         runtime.reset();
         while (getRuntime() < 15) {
-            conveyorBeltR.setPower(1);
-            conveyorBeltL.setPower(1);
+            conveyorBeltR.setPower(0.5);
+            conveyorBeltL.setPower(0.5);
             shooter.setPower(1);
             getRuntime();
         }
