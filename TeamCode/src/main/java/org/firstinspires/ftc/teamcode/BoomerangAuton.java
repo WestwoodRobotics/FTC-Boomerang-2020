@@ -312,8 +312,8 @@ public class BoomerangAuton extends LinearOpMode {
     private void shoot() {
         runtime.reset();
         while (getRuntime() < 15) {
-            conveyorBeltR.setPower(0.5);
-            conveyorBeltL.setPower(0.5);
+            conveyorBeltR.setPower(1);
+            conveyorBeltL.setPower(1);
             shooter.setPower(1);
             getRuntime();
         }
