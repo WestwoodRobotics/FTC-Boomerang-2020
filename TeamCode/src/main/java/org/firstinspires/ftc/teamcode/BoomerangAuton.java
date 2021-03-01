@@ -38,7 +38,6 @@ import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.hardware.CRServo;
 import com.qualcomm.robotcore.hardware.DcMotor;
-import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
 
@@ -144,6 +143,12 @@ public class BoomerangAuton extends LinearOpMode {
         }
     }
 
+    private int calculateEncoderTicks(double inches) {
+        double inchesEncoderValue = Math.round(inches * ((28 * 20) / (2 * Math.PI * (49 / 25.4)))); //Formula for Encoder Ticks per Revolution = (encoderTicksPerRevolution*gearingRatio)/circumference, circumference = 2*pi*radius
+        int encoderValueRounded = (int) inchesEncoderValue;
+        return encoderValueRounded;
+    }
+
     private void stopRobot() {
         leftBackMotor.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
         leftFrontMotor.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
@@ -165,8 +170,7 @@ public class BoomerangAuton extends LinearOpMode {
     }
 
     private void forwardRobot(double inches) {
-        double inchesEncoderValue = Math.round(inches * ((28 * 20) / (2 * Math.PI * (49 / 25.4)))); //Formula for Encoder Ticks per Revolution = (encoderTicksPerRevolution*gearingRatio)/circumference, circumference = 2*pi*radius
-        int encoderValueRounded = (int) inchesEncoderValue;
+        int encoderValueRounded = calculateEncoderTicks(inches);
         resetEncoders();
 
         leftBackMotor.setTargetPosition(encoderValueRounded);
@@ -184,9 +188,6 @@ public class BoomerangAuton extends LinearOpMode {
         leftFrontMotor.setPower(1);
         rightFrontMotor.setPower(1);
 
-        telemetry.addData("leftBack", (inchesEncoderValue));
-        telemetry.update();
-
         while (leftBackMotor.isBusy() && rightBackMotor.isBusy() && leftFrontMotor.isBusy() && rightFrontMotor.isBusy()) {
             //continue
         }
@@ -194,8 +195,7 @@ public class BoomerangAuton extends LinearOpMode {
     }
 
     private void backwardRobot(double inches) {
-        double inchesEncoderValue = Math.round(inches * ((28 * 20) / (2 * Math.PI * (49 / 25.4)))); //Formula for Encoder Ticks per Revolution = (encoderTicksPerRevolution*gearingRatio)/circumference, circumference = 2*pi*radius
-        int encoderValueRounded = (int) inchesEncoderValue;
+        int encoderValueRounded = calculateEncoderTicks(inches);
         resetEncoders();
 
         leftBackMotor.setTargetPosition(-encoderValueRounded);
@@ -220,8 +220,7 @@ public class BoomerangAuton extends LinearOpMode {
     }
 
     private void rightRobot(double inches) {
-        double inchesEncoderValue = Math.round(inches * ((28 * 20) / (2 * Math.PI * (49 / 25.4)))); //Formula for Encoder Ticks per Revolution = (encoderTicksPerRevolution*gearingRatio)/circumference, circumference = 2*pi*radius
-        int encoderValueRounded = (int) inchesEncoderValue;
+        int encoderValueRounded = calculateEncoderTicks(inches);
         resetEncoders();
 
         leftBackMotor.setTargetPosition(encoderValueRounded);
@@ -246,8 +245,7 @@ public class BoomerangAuton extends LinearOpMode {
     }
 
     private void leftRobot(double inches) {
-        double inchesEncoderValue = Math.round(inches * ((28 * 20) / (2 * Math.PI * (49 / 25.4)))); //Formula for Encoder Ticks per Revolution = (encoderTicksPerRevolution*gearingRatio)/circumference, circumference = 2*pi*radius
-        int encoderValueRounded = (int) inchesEncoderValue;
+        int encoderValueRounded = calculateEncoderTicks(inches);
         resetEncoders();
 
         leftBackMotor.setTargetPosition(-encoderValueRounded);
@@ -284,8 +282,7 @@ public class BoomerangAuton extends LinearOpMode {
     }
 
     private void rotateRobot(double degrees) {
-        double degreesEncoderValue = Math.round(degrees * ((28 * 20) / (2 * Math.PI * (49 / 25.4)))); //Formula for Encoder Ticks per Revolution = (encoderTicksPerRevolution*gearingRatio)/circumference, circumference = 2*pi*radius
-        int encoderValueRounded = (int) degreesEncoderValue;
+        int encoderValueRounded = calculateEncoderTicks(degrees);
         resetEncoders();
 
         leftBackMotor.setTargetPosition(encoderValueRounded);
