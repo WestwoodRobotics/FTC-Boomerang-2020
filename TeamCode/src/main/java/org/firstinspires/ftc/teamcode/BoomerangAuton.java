@@ -51,16 +51,15 @@ public class BoomerangAuton extends LinearOpMode {
     DcMotor leftFrontMotor = null;
     DcMotor rightFrontMotor = null;
     DcMotor shooter = null;
-    DcMotor conveyorBeltL = null;
-    DcMotor conveyorBeltR = null;
-    DcMotor roller = null;
+    DcMotor conveyorBelt = null;
+    DcMotor intake = null;
 
     private void highGoalAction() {
-        forwardRobot(21);
-        leftRobot(21);
-        forwardRobot(21);
-        shoot();
-        forwardRobot(17.5);
+        forwardRobot(21, 1);
+        leftRobot(21, 1);
+        forwardRobot(21, 1);
+        shoot(1, 1);
+        forwardRobot(17.5, 1);
     }
 
     /* private void powerShotAction() {
@@ -110,26 +109,23 @@ public class BoomerangAuton extends LinearOpMode {
         rightBackMotor = hardwareMap.get(DcMotor.class, "rightFront");
         leftFrontMotor = hardwareMap.get(DcMotor.class, "leftBack");
         rightFrontMotor = hardwareMap.get(DcMotor.class, "rightBack");
-        conveyorBeltL = hardwareMap.get(DcMotor.class, "conveyorL");
-        conveyorBeltR = hardwareMap.get(DcMotor.class, "conveyorR");
+        conveyorBelt = hardwareMap.get(DcMotor.class, "conveyor");
         shooter = hardwareMap.get(DcMotor.class, "shooter");
         wobbleClawServo = hardwareMap.get(CRServo.class, "wobbleClaw");
         wobbleArmServo = hardwareMap.get(CRServo.class, "wobbleArm");
-        roller = hardwareMap.get(DcMotor.class, "roller");
+        intake = hardwareMap.get(DcMotor.class, "roller");
         // Most robots need the motor on one side to be reversed to drive forward
         // Reverse the motor that runs backwards when connected directly to the battery
         leftFrontMotor.setDirection(DcMotor.Direction.REVERSE);
         rightFrontMotor.setDirection(DcMotor.Direction.FORWARD);
         leftBackMotor.setDirection(DcMotor.Direction.REVERSE);
         rightBackMotor.setDirection(DcMotor.Direction.FORWARD);
-        conveyorBeltL.setDirection(DcMotor.Direction.FORWARD);
-        conveyorBeltR.setDirection(DcMotor.Direction.REVERSE);
+        conveyorBelt.setDirection(DcMotor.Direction.FORWARD);
         shooter.setDirection(DcMotor.Direction.FORWARD);
         wobbleClawServo.setDirection(CRServo.Direction.FORWARD);
         wobbleArmServo.setDirection(CRServo.Direction.FORWARD);
-        roller.setDirection(DcMotor.Direction.FORWARD);
-
-
+        intake.setDirection(DcMotor.Direction.FORWARD);
+        
         stopRobot();
         resetEncoders();
         waitForStart();
@@ -145,8 +141,8 @@ public class BoomerangAuton extends LinearOpMode {
 
     private int calculateEncoderTicks(double inches) {
         double inchesEncoderValue = Math.round(inches * ((28 * 20) / (2 * Math.PI * (49 / 25.4)))); //Formula for Encoder Ticks per Revolution = (encoderTicksPerRevolution*gearingRatio)/circumference, circumference = 2*pi*radius
-        int encoderValueRounded = (int) inchesEncoderValue;
-        return encoderValueRounded;
+        int encoderValue = (int) inchesEncoderValue;
+        return encoderValue;
     }
 
     private void stopRobot() {
@@ -155,38 +151,37 @@ public class BoomerangAuton extends LinearOpMode {
         rightBackMotor.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
         rightFrontMotor.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
         shooter.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
-        roller.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+        intake.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+        conveyorBelt.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
 
         leftBackMotor.setPower(0);
         leftFrontMotor.setPower(0);
         rightBackMotor.setPower(0);
         rightFrontMotor.setPower(0);
-        conveyorBeltL.setPower(0);
-        conveyorBeltR.setPower(0);
+        conveyorBelt.setPower(0);
         shooter.setPower(0);
         wobbleClawServo.setPower(0);
-        roller.setPower(0);
+        intake.setPower(0);
         wobbleArmServo.setPower(0);
+
+        sleep(1000);
     }
 
-    private void forwardRobot(double inches) {
-        int encoderValueRounded = calculateEncoderTicks(inches);
+    private void forwardRobot(double inches, double power) {
+        int encoderValue = calculateEncoderTicks(inches);
         resetEncoders();
 
-        leftBackMotor.setTargetPosition(encoderValueRounded);
-        rightBackMotor.setTargetPosition(encoderValueRounded);
-        leftFrontMotor.setTargetPosition(encoderValueRounded);
-        rightFrontMotor.setTargetPosition(encoderValueRounded);
+        leftBackMotor.setTargetPosition(encoderValue);
+        rightBackMotor.setTargetPosition(encoderValue);
+        leftFrontMotor.setTargetPosition(encoderValue);
+        rightFrontMotor.setTargetPosition(encoderValue);
 
-        leftBackMotor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-        rightBackMotor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-        leftFrontMotor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-        rightFrontMotor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+        wheelEncoderSettings();
 
-        leftBackMotor.setPower(1);
-        rightBackMotor.setPower(1);
-        leftFrontMotor.setPower(1);
-        rightFrontMotor.setPower(1);
+        leftBackMotor.setPower(power);
+        rightBackMotor.setPower(power);
+        leftFrontMotor.setPower(power);
+        rightFrontMotor.setPower(power);
 
         while (leftBackMotor.isBusy() && rightBackMotor.isBusy() && leftFrontMotor.isBusy() && rightFrontMotor.isBusy()) {
             //continue
@@ -194,24 +189,21 @@ public class BoomerangAuton extends LinearOpMode {
         stopRobot();
     }
 
-    private void backwardRobot(double inches) {
-        int encoderValueRounded = calculateEncoderTicks(inches);
+    private void backwardRobot(double inches, double power) {
+        int encoderValue = calculateEncoderTicks(inches);
         resetEncoders();
 
-        leftBackMotor.setTargetPosition(-encoderValueRounded);
-        rightBackMotor.setTargetPosition(-encoderValueRounded);
-        leftFrontMotor.setTargetPosition(-encoderValueRounded);
-        rightFrontMotor.setTargetPosition(-encoderValueRounded);
+        leftBackMotor.setTargetPosition(-encoderValue);
+        rightBackMotor.setTargetPosition(-encoderValue);
+        leftFrontMotor.setTargetPosition(-encoderValue);
+        rightFrontMotor.setTargetPosition(-encoderValue);
 
-        leftBackMotor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-        rightBackMotor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-        leftFrontMotor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-        rightFrontMotor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+        wheelEncoderSettings();
 
-        leftBackMotor.setPower(-1);
-        rightBackMotor.setPower(-1);
-        leftFrontMotor.setPower(-1);
-        rightFrontMotor.setPower(-1);
+        leftBackMotor.setPower(-power);
+        rightBackMotor.setPower(-power);
+        leftFrontMotor.setPower(-power);
+        rightFrontMotor.setPower(-power);
 
         while (leftBackMotor.isBusy() && rightBackMotor.isBusy() && leftFrontMotor.isBusy() && rightFrontMotor.isBusy()) {
             //continue
@@ -219,24 +211,21 @@ public class BoomerangAuton extends LinearOpMode {
         stopRobot();
     }
 
-    private void rightRobot(double inches) {
-        int encoderValueRounded = calculateEncoderTicks(inches);
+    private void rightRobot(double inches, double power) {
+        int encoderValue = calculateEncoderTicks(inches);
         resetEncoders();
 
-        leftBackMotor.setTargetPosition(encoderValueRounded);
-        rightBackMotor.setTargetPosition(-encoderValueRounded);
-        leftFrontMotor.setTargetPosition(-encoderValueRounded);
-        rightFrontMotor.setTargetPosition(encoderValueRounded);
+        leftBackMotor.setTargetPosition(encoderValue);
+        rightBackMotor.setTargetPosition(-encoderValue);
+        leftFrontMotor.setTargetPosition(-encoderValue);
+        rightFrontMotor.setTargetPosition(encoderValue);
 
-        leftBackMotor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-        rightBackMotor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-        leftFrontMotor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-        rightFrontMotor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+        wheelEncoderSettings();
 
-        leftBackMotor.setPower(1);
-        rightBackMotor.setPower(-1);
-        leftFrontMotor.setPower(-1);
-        rightFrontMotor.setPower(1);
+        leftBackMotor.setPower(power);
+        rightBackMotor.setPower(-power);
+        leftFrontMotor.setPower(-power);
+        rightFrontMotor.setPower(power);
 
         while (leftBackMotor.isBusy() && rightBackMotor.isBusy() && leftFrontMotor.isBusy() && rightFrontMotor.isBusy()) {
             //continue
@@ -244,24 +233,21 @@ public class BoomerangAuton extends LinearOpMode {
         stopRobot();
     }
 
-    private void leftRobot(double inches) {
-        int encoderValueRounded = calculateEncoderTicks(inches);
+    private void leftRobot(double inches, double power) {
+        int encoderValue = calculateEncoderTicks(inches);
         resetEncoders();
 
-        leftBackMotor.setTargetPosition(-encoderValueRounded);
-        rightBackMotor.setTargetPosition(encoderValueRounded);
-        leftFrontMotor.setTargetPosition(encoderValueRounded);
-        rightFrontMotor.setTargetPosition(-encoderValueRounded);
+        leftBackMotor.setTargetPosition(-encoderValue);
+        rightBackMotor.setTargetPosition(encoderValue);
+        leftFrontMotor.setTargetPosition(encoderValue);
+        rightFrontMotor.setTargetPosition(-encoderValue);
 
-        leftBackMotor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-        rightBackMotor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-        leftFrontMotor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-        rightFrontMotor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+        wheelEncoderSettings();
 
-        leftBackMotor.setPower(-1);
-        rightBackMotor.setPower(1);
-        leftFrontMotor.setPower(1);
-        rightFrontMotor.setPower(-1);
+        leftBackMotor.setPower(-power);
+        rightBackMotor.setPower(power);
+        leftFrontMotor.setPower(power);
+        rightFrontMotor.setPower(-power);
 
         while (leftBackMotor.isBusy() && rightBackMotor.isBusy() && leftFrontMotor.isBusy() && rightFrontMotor.isBusy()) {
             //continue
@@ -281,24 +267,28 @@ public class BoomerangAuton extends LinearOpMode {
         rightFrontMotor.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
     }
 
-    private void rotateRobot(double degrees) {
-        int encoderValueRounded = calculateEncoderTicks(degrees);
-        resetEncoders();
-
-        leftBackMotor.setTargetPosition(encoderValueRounded);
-        rightBackMotor.setTargetPosition(-encoderValueRounded);
-        leftFrontMotor.setTargetPosition(encoderValueRounded);
-        rightFrontMotor.setTargetPosition(-encoderValueRounded);
-
+    private void wheelEncoderSettings() {
         leftBackMotor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
         rightBackMotor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
         leftFrontMotor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
         rightFrontMotor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+    }
 
-        leftBackMotor.setPower(1);
-        rightBackMotor.setPower(-1);
-        leftFrontMotor.setPower(1);
-        rightFrontMotor.setPower(-1);
+    private void rotateRobot(double degrees, double power) {
+        int encoderValue = calculateEncoderTicks(degrees);
+        resetEncoders();
+
+        leftBackMotor.setTargetPosition(encoderValue);
+        rightBackMotor.setTargetPosition(-encoderValue);
+        leftFrontMotor.setTargetPosition(encoderValue);
+        rightFrontMotor.setTargetPosition(-encoderValue);
+
+        wheelEncoderSettings();
+
+        leftBackMotor.setPower(power);
+        rightBackMotor.setPower(-power);
+        leftFrontMotor.setPower(power);
+        rightFrontMotor.setPower(-power);
 
         while (leftBackMotor.isBusy() && rightBackMotor.isBusy() && leftFrontMotor.isBusy() && rightFrontMotor.isBusy()) {
             //continue
@@ -306,12 +296,12 @@ public class BoomerangAuton extends LinearOpMode {
         stopRobot();
     }
 
-    private void shoot() {
+    private void shoot(double conveyorPower, double shooterPower) {
         runtime.reset();
         while (getRuntime() < 15) {
-            conveyorBeltR.setPower(1);
-            conveyorBeltL.setPower(1);
-            shooter.setPower(1);
+            // intake.setPower(1); set parameter intakePower if using in shoot function
+            conveyorBelt.setPower(conveyorPower);
+            shooter.setPower(shooterPower);
             getRuntime();
         }
         stopRobot();

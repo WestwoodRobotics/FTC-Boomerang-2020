@@ -52,8 +52,7 @@ public class BoomerangTeleOp extends OpMode {
     private boolean slowMode = false;
     private DcMotor roller = null;
     private boolean isIntakeRunning = false;
-    private DcMotor conveyorBeltL = null;
-    private DcMotor conveyorBeltR = null;
+    private DcMotor conveyorBelt = null;
     private DcMotor shooterMotor = null;
     private CRServo wobbleArmServo = null;
     private CRServo wobbleClawServo = null;
@@ -79,8 +78,7 @@ public class BoomerangTeleOp extends OpMode {
         leftBackDrive = hardwareMap.get(DcMotor.class, "leftBack");
         rightBackDrive = hardwareMap.get(DcMotor.class, "rightBack");
         roller = hardwareMap.get(DcMotor.class, "roller");
-        conveyorBeltL = hardwareMap.get(DcMotor.class, "conveyorL");
-        conveyorBeltR = hardwareMap.get(DcMotor.class, "conveyorR");
+        conveyorBelt = hardwareMap.get(DcMotor.class, "conveyor");
         shooterMotor = hardwareMap.get(DcMotor.class, "shooter");
         wobbleArmServo = hardwareMap.get(CRServo.class, "wobbleArm");
         wobbleClawServo = hardwareMap.get(CRServo.class, "wobbleClaw");
@@ -90,8 +88,7 @@ public class BoomerangTeleOp extends OpMode {
         leftBackDrive.setDirection(DcMotor.Direction.REVERSE);
         rightBackDrive.setDirection(DcMotor.Direction.FORWARD);
         roller.setDirection(DcMotor.Direction.FORWARD);
-        conveyorBeltL.setDirection(DcMotor.Direction.FORWARD);
-        conveyorBeltR.setDirection(DcMotor.Direction.REVERSE);
+        conveyorBelt.setDirection(DcMotor.Direction.FORWARD);
         shooterMotor.setDirection(DcMotor.Direction.FORWARD);
         wobbleArmServo.setDirection(CRServo.Direction.FORWARD);
         wobbleClawServo.setDirection(CRServo.Direction.FORWARD);
@@ -181,8 +178,7 @@ public class BoomerangTeleOp extends OpMode {
             conveyorPower = 0;
         }
 
-        conveyorBeltL.setPower(conveyorPower);
-        conveyorBeltR.setPower(conveyorPower);
+        conveyorBelt.setPower(conveyorPower);
 
         if (gamepad2.right_trigger != 0) {
             shooterPower = 1;
