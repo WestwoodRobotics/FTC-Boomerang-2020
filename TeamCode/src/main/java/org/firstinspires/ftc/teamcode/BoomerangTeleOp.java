@@ -37,7 +37,7 @@ package org.firstinspires.ftc.teamcode;
 
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
-import com.qualcomm.robotcore.hardware.CRServo;
+import com.qualcomm.robotcore.hardware.CRServoImpl;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
@@ -45,17 +45,6 @@ import com.qualcomm.robotcore.util.ElapsedTime;
 
 public class BoomerangTeleOp extends OpMode {
     private final ElapsedTime runtime = new ElapsedTime();
-    private DcMotor leftFrontDrive = null;
-    private DcMotor rightFrontDrive = null;
-    private DcMotor rightBackDrive = null;
-    private DcMotor leftBackDrive = null;
-    private boolean slowMode = false;
-    private DcMotor roller = null;
-    private boolean isIntakeRunning = false;
-    private DcMotor conveyorBelt = null;
-    private DcMotor shooterMotor = null;
-    private CRServo wobbleArmServo = null;
-    private CRServo wobbleClawServo = null;
     // Power variables
     double leftFrontPower;
     double rightFrontPower;
@@ -67,6 +56,17 @@ public class BoomerangTeleOp extends OpMode {
     double shooterPower = 0;
     double wobbleArmPower = 0;
     double wobbleClawPower = 0;
+    private DcMotor leftFrontDrive = null;
+    private DcMotor rightFrontDrive = null;
+    private DcMotor rightBackDrive = null;
+    private DcMotor leftBackDrive = null;
+    private boolean slowMode = false;
+    private DcMotor intake = null;
+    private boolean isIntakeRunning = false;
+    private DcMotor conveyorBelt = null;
+    private DcMotor shooterMotor = null;
+    private CRServoImpl wobbleArmServo = null;
+    private CRServoImpl wobbleClawServo = null;
 
     @Override
     public void init() {
@@ -77,21 +77,21 @@ public class BoomerangTeleOp extends OpMode {
         rightFrontDrive = hardwareMap.get(DcMotor.class, "rightFront");
         leftBackDrive = hardwareMap.get(DcMotor.class, "leftBack");
         rightBackDrive = hardwareMap.get(DcMotor.class, "rightBack");
-        roller = hardwareMap.get(DcMotor.class, "roller");
+        intake = hardwareMap.get(DcMotor.class, "intake");
         conveyorBelt = hardwareMap.get(DcMotor.class, "conveyor");
         shooterMotor = hardwareMap.get(DcMotor.class, "shooter");
-        wobbleArmServo = hardwareMap.get(CRServo.class, "wobbleArm");
-        wobbleClawServo = hardwareMap.get(CRServo.class, "wobbleClaw");
+        wobbleArmServo = hardwareMap.get(CRServoImpl.class, "wobbleArm");
+        wobbleClawServo = hardwareMap.get(CRServoImpl.class, "wobbleClaw");
 
         leftFrontDrive.setDirection(DcMotor.Direction.REVERSE);
         rightFrontDrive.setDirection(DcMotor.Direction.FORWARD);
         leftBackDrive.setDirection(DcMotor.Direction.REVERSE);
         rightBackDrive.setDirection(DcMotor.Direction.FORWARD);
-        roller.setDirection(DcMotor.Direction.FORWARD);
+        intake.setDirection(DcMotor.Direction.FORWARD);
         conveyorBelt.setDirection(DcMotor.Direction.FORWARD);
         shooterMotor.setDirection(DcMotor.Direction.FORWARD);
-        wobbleArmServo.setDirection(CRServo.Direction.FORWARD);
-        wobbleClawServo.setDirection(CRServo.Direction.FORWARD);
+        wobbleArmServo.setDirection(CRServoImpl.Direction.FORWARD);
+        wobbleClawServo.setDirection(CRServoImpl.Direction.FORWARD);
 
         telemetry.addData("Status", "Initialized");
         telemetry.update();
@@ -155,7 +155,7 @@ public class BoomerangTeleOp extends OpMode {
         rightBackDrive.setPower(rightBackPower);
         rightFrontDrive.setPower(rightFrontPower);
 
-        double rollerPower;
+        double intakePower;
 
 
         if (gamepad2.a) {
@@ -165,12 +165,12 @@ public class BoomerangTeleOp extends OpMode {
             isIntakeRunning = false;
         }
         if (isIntakeRunning) {
-            rollerPower = 1;
+            intakePower = 1;
         } else {
-            rollerPower = 0;
+            intakePower = 0;
         }
 
-        roller.setPower(rollerPower);
+        intake.setPower(intakePower);
 
         if (gamepad2.right_bumper) {
             conveyorPower = 0.5;

@@ -36,7 +36,7 @@ package org.firstinspires.ftc.teamcode;
 
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
-import com.qualcomm.robotcore.hardware.CRServo;
+import com.qualcomm.robotcore.hardware.CRServoImpl;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
@@ -44,8 +44,8 @@ import com.qualcomm.robotcore.util.ElapsedTime;
 @Autonomous(name = "BoomerangAuton")
 public class BoomerangAuton extends LinearOpMode {
     private final ElapsedTime runtime = new ElapsedTime();
-    CRServo wobbleClawServo = null;
-    CRServo wobbleArmServo = null;
+    CRServoImpl wobbleClawServo = null;
+    CRServoImpl wobbleArmServo = null;
     DcMotor leftBackMotor = null;
     DcMotor rightBackMotor = null;
     DcMotor leftFrontMotor = null;
@@ -111,9 +111,9 @@ public class BoomerangAuton extends LinearOpMode {
         rightFrontMotor = hardwareMap.get(DcMotor.class, "rightBack");
         conveyorBelt = hardwareMap.get(DcMotor.class, "conveyor");
         shooter = hardwareMap.get(DcMotor.class, "shooter");
-        wobbleClawServo = hardwareMap.get(CRServo.class, "wobbleClaw");
-        wobbleArmServo = hardwareMap.get(CRServo.class, "wobbleArm");
-        intake = hardwareMap.get(DcMotor.class, "roller");
+        wobbleClawServo = hardwareMap.get(CRServoImpl.class, "wobbleClaw");
+        wobbleArmServo = hardwareMap.get(CRServoImpl.class, "wobbleArm");
+        intake = hardwareMap.get(DcMotor.class, "intake");
         // Most robots need the motor on one side to be reversed to drive forward
         // Reverse the motor that runs backwards when connected directly to the battery
         leftFrontMotor.setDirection(DcMotor.Direction.REVERSE);
@@ -122,10 +122,10 @@ public class BoomerangAuton extends LinearOpMode {
         rightBackMotor.setDirection(DcMotor.Direction.FORWARD);
         conveyorBelt.setDirection(DcMotor.Direction.FORWARD);
         shooter.setDirection(DcMotor.Direction.FORWARD);
-        wobbleClawServo.setDirection(CRServo.Direction.FORWARD);
-        wobbleArmServo.setDirection(CRServo.Direction.FORWARD);
+        wobbleClawServo.setDirection(CRServoImpl.Direction.FORWARD);
+        wobbleArmServo.setDirection(CRServoImpl.Direction.FORWARD);
         intake.setDirection(DcMotor.Direction.FORWARD);
-        
+
         stopRobot();
         resetEncoders();
         waitForStart();
