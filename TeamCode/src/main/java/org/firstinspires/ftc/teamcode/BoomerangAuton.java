@@ -58,7 +58,9 @@ public class BoomerangAuton extends LinearOpMode {
         forwardRobot(21, 1);
         leftRobot(21, 1);
         forwardRobot(21, 1);
+        rotateRobot(180, 1);
         shoot(1, 1);
+        rotateRobot(180,1);
         forwardRobot(17.5, 1);
     }
 
