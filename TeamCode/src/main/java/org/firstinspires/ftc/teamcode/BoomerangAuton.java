@@ -58,9 +58,7 @@ public class BoomerangAuton extends LinearOpMode {
         forwardRobot(21, 1);
         leftRobot(21, 1);
         forwardRobot(21, 1);
-        rotateRobot(180, 1);
-        shoot(1, 1);
-        rotateRobot(180,1);
+        shoot(1, 1, 1);
         forwardRobot(17.5, 1);
     }
 
@@ -122,11 +120,11 @@ public class BoomerangAuton extends LinearOpMode {
         rightFrontMotor.setDirection(DcMotor.Direction.FORWARD);
         leftBackMotor.setDirection(DcMotor.Direction.REVERSE);
         rightBackMotor.setDirection(DcMotor.Direction.FORWARD);
-        conveyorBelt.setDirection(DcMotor.Direction.FORWARD);
-        shooter.setDirection(DcMotor.Direction.FORWARD);
+        conveyorBelt.setDirection(DcMotor.Direction.REVERSE);
+        shooter.setDirection(DcMotor.Direction.REVERSE);
         wobbleClawServo.setDirection(CRServoImpl.Direction.FORWARD);
         wobbleArmServo.setDirection(CRServoImpl.Direction.FORWARD);
-        intake.setDirection(DcMotor.Direction.FORWARD);
+        intake.setDirection(DcMotor.Direction.REVERSE);
 
         stopRobot();
         resetEncoders();
@@ -169,7 +167,7 @@ public class BoomerangAuton extends LinearOpMode {
         sleep(1000);
     }
 
-    private void forwardRobot(double inches, double power) {
+    private void backwardRobot(double inches, double power) {
         int encoderValue = calculateEncoderTicks(inches);
         resetEncoders();
 
@@ -191,7 +189,7 @@ public class BoomerangAuton extends LinearOpMode {
         stopRobot();
     }
 
-    private void backwardRobot(double inches, double power) {
+    private void forwardRobot(double inches, double power) {
         int encoderValue = calculateEncoderTicks(inches);
         resetEncoders();
 
@@ -298,10 +296,10 @@ public class BoomerangAuton extends LinearOpMode {
         stopRobot();
     }
 
-    private void shoot(double conveyorPower, double shooterPower) {
+    private void shoot(double intakePower, double conveyorPower, double shooterPower) {
         runtime.reset();
         while (getRuntime() < 15) {
-            // intake.setPower(1); set parameter intakePower if using in shoot function
+            intake.setPower(intakePower);
             conveyorBelt.setPower(conveyorPower);
             shooter.setPower(shooterPower);
             getRuntime();
