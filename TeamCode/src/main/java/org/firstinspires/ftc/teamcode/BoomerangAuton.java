@@ -1,124 +1,325 @@
+/* Copyright (c) 2017 FIRST. All rights reserved.
+ *
+ * Redistribution and use in source and binary forms, with or without modification,
+ * are permitted (subject to the limitations in the disclaimer below) provided that
+ * the following conditions are met:
+ *
+ * Redistributions of source code must retain the above copyright notice, this list
+ * of conditions and the following disclaimer.
+ *
+ * Redistributions in binary form must reproduce the above copyright notice, this
+ * list of conditions and the following disclaimer in the documentation and/or
+ * other materials provided with the distribution.
+ *
+ * Neither the name of FIRST nor the names of its contributors may be used to endorse or
+ * promote products derived from this software without specific prior written permission.
+ *
+ * NO EXPRESS OR IMPLIED LICENSES TO ANY PARTY'S PATENT RIGHTS ARE GRANTED BY THIS
+ * LICENSE. THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS
+ * "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO,
+ * THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE
+ * ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT OWNER OR CONTRIBUTORS BE LIABLE
+ * FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL
+ * DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR
+ * SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER
+ * CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY,
+ * OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
+ * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+ */
+
+
+/* BoomerangAuton is a Java program by Kapilesh P. and Paras N. that controls the Boomerang
+robot during the Autonomous Period of the FTC Ultimate Goal competition. */
+
+
 package org.firstinspires.ftc.teamcode;
 
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
-import com.qualcomm.robotcore.eventloop.opmode.Disabled;
+import com.qualcomm.robotcore.hardware.DcMotorController;
+import com.qualcomm.robotcore.hardware.DcMotorEx;
+import com.qualcomm.robotcore.hardware.VoltageSensor;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
-import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
+import com.qualcomm.robotcore.hardware.CRServoImpl;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.util.ElapsedTime;
-import com.qualcomm.robotcore.util.Range;
 
-import org.firstinspires.ftc.robotcore.external.ClassFactory;
-import org.firstinspires.ftc.robotcore.external.hardware.camera.WebcamName;
-import org.firstinspires.ftc.robotcore.external.navigation.VuforiaLocalizer;
-import org.firstinspires.ftc.robotcore.external.tfod.TFObjectDetector;
 
-@Autonomous(name="red right inner wobble goal high goal", group="Linear Opmode")
+@Autonomous(name = "BoomerangAuton")
 public class BoomerangAuton extends LinearOpMode {
+    private final ElapsedTime runtime = new ElapsedTime();
+    CRServoImpl wobbleClawServo = null;
+    CRServoImpl wobbleArmServo = null;
+    DcMotorEx leftBackMotor = null;
+    DcMotorEx rightBackMotor = null;
+    DcMotorEx leftFrontMotor = null;
+    DcMotorEx rightFrontMotor = null;
+    DcMotorEx shooter = null;
+    DcMotorEx conveyorBelt = null;
+    DcMotorEx intake = null;
 
-    private ElapsedTime runtime = new ElapsedTime();
-    private DcMotor leftFrontDrive = null;
-    private DcMotor rightFrontDrive = null;
-    private DcMotor rightBackDrive = null;
-    private DcMotor leftBackDrive = null;
-    private DcMotor conveyorBelt = null;
-    private TFObjectDetector tfod;
-    private DcMotor shooter = null;
+    /* private void powerShotAction() {
+        leftRobot(20.25);
+        forwardRobot(54);
+        shoot();
+        rotateRobot(5.95); // rotate counterclockwise, make negative if needed
+        shoot();
+        rotateRobot(5.81); // rotate counterclockwise, make negative if needed
+        shoot();
+        rotateRobot(11.76); // rotate clockwise, make negative if needed
+        forwardRobot(16);
+    } */
 
-    /*private static final String TFOD_MODEL_ASSET = "UltimateGoal.tflite";
-    private static final String LABEL_FIRST_ELEMENT = "Quad";
-    private static final String LABEL_SECOND_ELEMENT = "Single";
-    private static final String VUFORIA_KEY =
-            " -- YOUR NEW VUFORIA KEY GOES HERE  --- ";
-     */
+    /* private void wobbleGoalAction() {
+        leftRobot(3);
+        forwardRobot(18);
+        //sense for # of rings
+        leftRobot(21);
+        forwardRobot(36);
+        rightRobot(21);
+        shoot();
+        rightRobot(3);
+        forwardRobot(24);
+        // if A:
+        rotateRobot(180); // rotate clockwise, make negative if needed
+        wobbleClawServo.setPower(-1); // drop wobble goal
+        //if B:
+        rotateRobot(90); // rotate clockwise, make negative if needed
+        wobbleClawServo.setPower(-1); // drop wobble goal
+        //if C:
+        forwardRobot(36);
+        rotateRobot(-180); // rotate clockwise, make negative if needed
+        wobbleClawServo.setPower(-1); // drop wobble goal
+        forwardRobot(36);
+    } */
+
     @Override
     public void runOpMode() {
         telemetry.addData("Status", "Initialized");
         telemetry.update();
-        tfod.activate();
 
-        leftFrontDrive  = hardwareMap.get(DcMotor.class, "leftFront");
-        rightFrontDrive = hardwareMap.get(DcMotor.class, "rightFront");
-        leftBackDrive  = hardwareMap.get(DcMotor.class, "leftBack");
-        rightBackDrive = hardwareMap.get(DcMotor.class, "rightBack");
-        shooter = hardwareMap.get(DcMotor.class, "shooter");
-        conveyorBelt = hardwareMap.get(DcMotor.class, "conveyorBelt");
+        // Initialize the hardware variables. Note that the strings used here as parameters
+        // to 'get' must correspond to the names assigned during the robot configuration
+        // step (using the FTC Robot Controller app on the phone).
+        leftBackMotor = hardwareMap.get(DcMotorEx.class, "leftFront");
+        rightBackMotor = hardwareMap.get(DcMotorEx.class, "rightFront");
+        leftFrontMotor = hardwareMap.get(DcMotorEx.class, "leftBack");
+        rightFrontMotor = hardwareMap.get(DcMotorEx.class, "rightBack");
+        conveyorBelt = hardwareMap.get(DcMotorEx.class, "conveyor");
+        shooter = hardwareMap.get(DcMotorEx.class, "shooter");
+        wobbleClawServo = hardwareMap.get(CRServoImpl.class, "wobbleClaw");
+        wobbleArmServo = hardwareMap.get(CRServoImpl.class, "wobbleArm");
+        intake = hardwareMap.get(DcMotorEx.class, "intake");
 
-        leftFrontDrive.setDirection(DcMotor.Direction.REVERSE);
-        rightFrontDrive.setDirection(DcMotor.Direction.FORWARD);
-        leftBackDrive.setDirection(DcMotor.Direction.REVERSE);
-        rightBackDrive.setDirection(DcMotor.Direction.FORWARD);
-        conveyorBelt.setDirection(DcMotor.Direction.FORWARD);
-        shooter.setDirection(DcMotor.Direction.FORWARD);
+        shooter.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
 
+        shooter.setVelocityPIDFCoefficients(2000, 0, 0, 0);
+        // Most robots need the motor on one side to be reversed to drive forward
+        // Reverse the motor that runs backwards when connected directly to the battery
+        leftFrontMotor.setDirection(DcMotor.Direction.REVERSE);
+        rightFrontMotor.setDirection(DcMotor.Direction.FORWARD);
+        leftBackMotor.setDirection(DcMotor.Direction.REVERSE);
+        rightBackMotor.setDirection(DcMotor.Direction.FORWARD);
+        conveyorBelt.setDirection(DcMotor.Direction.REVERSE);
+        shooter.setDirection(DcMotor.Direction.REVERSE);
+        wobbleClawServo.setDirection(CRServoImpl.Direction.FORWARD);
+        wobbleArmServo.setDirection(CRServoImpl.Direction.FORWARD);
+        intake.setDirection(DcMotor.Direction.REVERSE);
 
+        stopRobot();
+        resetEncoders();
         waitForStart();
         runtime.reset();
-        AutonFunctionsP autonFunctions = new AutonFunctionsP(leftFrontDrive, rightFrontDrive,
-                leftBackDrive, rightBackDrive, tfod, conveyorBelt, shooter);
+
         while (opModeIsActive()) {
-
-            //code for how the robot will move
-            autonFunctions.left(3);
-            autonFunctions.pause(1);
-            autonFunctions.forward(18);
-            autonFunctions.pause(1);
-            //sense number of rings
-            autonFunctions.left(21);
-            autonFunctions.pause(1);
-            autonFunctions.forward(36);
-            autonFunctions.pause(1);
-            autonFunctions.right(21);
-            autonFunctions.pause(1);
-            autonFunctions.shoot();
-            autonFunctions.shoot();
-            autonFunctions.shoot();
-            autonFunctions.right(3);
-            autonFunctions.pause(1);
-            autonFunctions.forward(21);
-            autonFunctions.pause(1);
-            if(autonFunctions.ringLocation == 0) {
-                autonFunctions.rotateCenter(180, "clockwise");
-                //drop wobble goal
-                autonFunctions.pause(1);
-            }
-            else if(autonFunctions.ringLocation == 1){
-                autonFunctions.rotateCenter(90, "clockwise");
-                //drop wobble goal
-                autonFunctions.pause(1);
-            }
-            else if(autonFunctions.ringLocation == 2){
-                autonFunctions.forward(36);
-                autonFunctions.pause(1);
-                autonFunctions.rotateCenter(180, "counterclockwise");
-                //drop wobble goal
-                autonFunctions.forward(36);
-            }
-
-            telemetry.addData("Status", "Run Time: " + runtime.toString());
-            telemetry.update();
+            highGoalAction();
+            forwardRobot(12, 1);
+            // wobbleGoalAction();
+            // powerShotAction();
+            break;
         }
     }
-    /*private void initVuforia() {
 
-        VuforiaLocalizer.Parameters parameters = new VuforiaLocalizer.Parameters();
-
-        parameters.vuforiaLicenseKey = VUFORIA_KEY;
-        parameters.cameraName = hardwareMap.get(WebcamName.class, "Webcam 1");
-
-        //  Instantiate the Vuforia engine
-        vuforia = ClassFactory.getInstance().createVuforia(parameters);
-
-        // Loading trackables is not necessary for the TensorFlow Object Detection engine.
+    private void highGoalAction() {
+        // start left of the leftmost red line
+        forwardRobot(60, 1);
+        rotateRobot(-10, 0.3);
+        shoot(0.5,0.5, 0.52);
+        rotateRobot(10, 0.3);
     }
 
-    private void initTfod() {
-        int tfodMonitorViewId = hardwareMap.appContext.getResources().getIdentifier(
-                "tfodMonitorViewId", "id", hardwareMap.appContext.getPackageName());
-        TFObjectDetector.Parameters tfodParameters = new TFObjectDetector.Parameters(tfodMonitorViewId);
-        tfodParameters.minResultConfidence = 0.8f;
-        tfod = ClassFactory.getInstance().createTFObjectDetector(tfodParameters, vuforia);
-        tfod.loadModelFromAsset(TFOD_MODEL_ASSET, LABEL_FIRST_ELEMENT, LABEL_SECOND_ELEMENT);
+    private int calculateEncoderTicks(double inches) {
+        double inchesEncoderValue = Math.round(inches * ((28 * 20) / (2 * Math.PI * (49 / 25.4)))); //Formula for Encoder Ticks per Revolution = (encoderTicksPerRevolution*gearingRatio)/circumference, circumference = 2*pi*radius
+        int encoderValue = (int) inchesEncoderValue;
+        return encoderValue;
     }
-    */
+
+    private void stopRobot() {
+        leftBackMotor.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+        leftFrontMotor.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+        rightBackMotor.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+        rightFrontMotor.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+        shooter.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+        intake.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+        conveyorBelt.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+
+        leftBackMotor.setPower(0);
+        leftFrontMotor.setPower(0);
+        rightBackMotor.setPower(0);
+        rightFrontMotor.setPower(0);
+        conveyorBelt.setPower(0);
+        shooter.setPower(0);
+        wobbleClawServo.setPower(0);
+        intake.setPower(0);
+        wobbleArmServo.setPower(0);
+
+        sleep(1000);
+    }
+
+    private void backwardRobot(double inches, double power) {
+        int encoderValue = calculateEncoderTicks(inches);
+        resetEncoders();
+
+        leftBackMotor.setTargetPosition(encoderValue);
+        rightBackMotor.setTargetPosition(encoderValue);
+        leftFrontMotor.setTargetPosition(encoderValue);
+        rightFrontMotor.setTargetPosition(encoderValue);
+
+        wheelEncoderSettings();
+
+        leftBackMotor.setPower(power);
+        rightBackMotor.setPower(power);
+        leftFrontMotor.setPower(power);
+        rightFrontMotor.setPower(power);
+
+        while (leftBackMotor.isBusy() && rightBackMotor.isBusy() && leftFrontMotor.isBusy() && rightFrontMotor.isBusy()) {
+            //continue
+        }
+        stopRobot();
+    }
+
+    private void forwardRobot(double inches, double power) {
+        int encoderValue = calculateEncoderTicks(inches);
+        resetEncoders();
+
+        leftBackMotor.setTargetPosition(-encoderValue);
+        rightBackMotor.setTargetPosition(-encoderValue);
+        leftFrontMotor.setTargetPosition(-encoderValue);
+        rightFrontMotor.setTargetPosition(-encoderValue);
+
+        wheelEncoderSettings();
+
+        leftBackMotor.setPower(-power);
+        rightBackMotor.setPower(-power);
+        leftFrontMotor.setPower(-power);
+        rightFrontMotor.setPower(-power);
+
+        while (leftBackMotor.isBusy() && rightBackMotor.isBusy() && leftFrontMotor.isBusy() && rightFrontMotor.isBusy()) {
+            //continue
+        }
+        stopRobot();
+    }
+
+    private void rightRobot(double inches, double power) {
+        int encoderValue = calculateEncoderTicks(inches);
+        resetEncoders();
+
+        leftBackMotor.setTargetPosition(encoderValue);
+        rightBackMotor.setTargetPosition(-encoderValue);
+        leftFrontMotor.setTargetPosition(-encoderValue);
+        rightFrontMotor.setTargetPosition(encoderValue);
+
+        wheelEncoderSettings();
+
+        leftBackMotor.setPower(power);
+        rightBackMotor.setPower(-power);
+        leftFrontMotor.setPower(-power);
+        rightFrontMotor.setPower(power);
+
+        while (leftBackMotor.isBusy() && rightBackMotor.isBusy() && leftFrontMotor.isBusy() && rightFrontMotor.isBusy()) {
+            //continue
+        }
+        stopRobot();
+    }
+
+    private void leftRobot(double inches, double power) {
+        int encoderValue = calculateEncoderTicks(inches);
+        resetEncoders();
+
+        leftBackMotor.setTargetPosition(-encoderValue);
+        rightBackMotor.setTargetPosition(encoderValue);
+        leftFrontMotor.setTargetPosition(encoderValue);
+        rightFrontMotor.setTargetPosition(-encoderValue);
+
+        wheelEncoderSettings();
+
+        leftBackMotor.setPower(-power);
+        rightBackMotor.setPower(power);
+        leftFrontMotor.setPower(power);
+        rightFrontMotor.setPower(-power);
+
+        while (leftBackMotor.isBusy() && rightBackMotor.isBusy() && leftFrontMotor.isBusy() && rightFrontMotor.isBusy()) {
+            //continue
+        }
+        stopRobot();
+    }
+
+    private void resetEncoders() {
+        leftBackMotor.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        rightBackMotor.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        leftFrontMotor.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        rightFrontMotor.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+
+        leftBackMotor.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+        rightBackMotor.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+        leftFrontMotor.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+        rightFrontMotor.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+    }
+
+    private void wheelEncoderSettings() {
+        leftBackMotor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+        rightBackMotor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+        leftFrontMotor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+        rightFrontMotor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+    }
+
+    private void rotateRobot(double degrees, double power) {
+        int encoderValue = calculateEncoderTicks(degrees);
+        resetEncoders();
+
+        leftBackMotor.setTargetPosition(encoderValue);
+        rightBackMotor.setTargetPosition(-encoderValue);
+        leftFrontMotor.setTargetPosition(encoderValue);
+        rightFrontMotor.setTargetPosition(-encoderValue);
+
+        wheelEncoderSettings();
+
+        leftBackMotor.setPower(power);
+        rightBackMotor.setPower(-power);
+        leftFrontMotor.setPower(power);
+        rightFrontMotor.setPower(-power);
+
+        while (leftBackMotor.isBusy() && rightBackMotor.isBusy() && leftFrontMotor.isBusy() && rightFrontMotor.isBusy()) {
+            //continue
+        }
+        stopRobot();
+    }
+
+    private void shoot(double intakePower, double conveyorPower, double shooterPower) {
+        shooter.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+        shooter.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        shooter.setVelocity(2000);
+        sleep(4200);
+        conveyorBelt.setPower(conveyorPower);
+        sleep(1000);
+        conveyorBelt.setPower(0);
+        sleep(2000);
+        conveyorBelt.setPower(conveyorPower);
+        intake.setPower(intakePower);
+        sleep(1000);
+        conveyorBelt.setPower(0);
+        sleep(2000);
+        conveyorBelt.setPower(conveyorPower);
+        sleep(3000);
+        stopRobot();
+    }
 }
