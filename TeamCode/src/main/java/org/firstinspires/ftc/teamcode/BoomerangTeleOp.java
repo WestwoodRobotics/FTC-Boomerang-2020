@@ -36,6 +36,7 @@ Goal Competition. */
 package org.firstinspires.ftc.teamcode;
 
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
+import com.qualcomm.robotcore.hardware.DcMotorEx;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.CRServoImpl;
 import com.qualcomm.robotcore.hardware.DcMotor;
@@ -66,7 +67,7 @@ public class BoomerangTeleOp extends OpMode {
     private boolean isIntakeRunningRev = false;
     private boolean isShooterRunning = false;
     private DcMotor conveyorBelt = null;
-    private DcMotor shooterMotor = null;
+    private DcMotorEx shooterMotor = null;
     private CRServoImpl wobbleArmServo = null;
     private CRServoImpl wobbleClawServo = null;
 
@@ -81,9 +82,13 @@ public class BoomerangTeleOp extends OpMode {
         rightBackDrive = hardwareMap.get(DcMotor.class, "rightBack");
         intake = hardwareMap.get(DcMotor.class, "intake");
         conveyorBelt = hardwareMap.get(DcMotor.class, "conveyor");
-        shooterMotor = hardwareMap.get(DcMotor.class, "shooter");
+        shooterMotor = hardwareMap.get(DcMotorEx.class, "shooter");
         wobbleArmServo = hardwareMap.get(CRServoImpl.class, "wobbleArm");
         wobbleClawServo = hardwareMap.get(CRServoImpl.class, "wobbleClaw");
+
+        shooterMotor.setMode(DcMotorEx.RunMode.RUN_USING_ENCODER);
+
+        shooterMotor.setVelocityPIDFCoefficients(70,0,0,0);
 
         leftFrontDrive.setDirection(DcMotor.Direction.REVERSE);
         rightFrontDrive.setDirection(DcMotor.Direction.FORWARD);
@@ -108,6 +113,7 @@ public class BoomerangTeleOp extends OpMode {
 
     @Override
     public void loop() {
+        telemetry.addData("Speed:", shooterMotor.getVelocity());
 
         turn = gamepad1.right_stick_x;
 
@@ -206,12 +212,12 @@ public class BoomerangTeleOp extends OpMode {
             isShooterRunning = false;
         }
         if (isShooterRunning) {
-            shooterPower = -0.5;
+            shooterPower = -2000;
         }
         else {
             shooterPower = 0;
         }
-        shooterMotor.setPower(shooterPower);
+        shooterMotor.setVelocity(shooterPower);
 
         //Make an if statement to prevent the servo from going to far in certain directions.
         wobbleArmPower = -gamepad2.left_stick_y;
