@@ -131,8 +131,8 @@ public class BoomerangAuton extends LinearOpMode {
         runtime.reset();
 
         while (opModeIsActive()) {
-            /*highGoalAction();
-            forwardRobot(12, 1);*/
+            highGoalAction();
+            // forwardRobot(12, 1);
             // wobbleGoalAction();
             // powerShotAction();
             break;
@@ -141,10 +141,10 @@ public class BoomerangAuton extends LinearOpMode {
 
     private void highGoalAction() {
         // start left of the leftmost red line
-        forwardRobot(60, 1);
-        rotateRobot(-10, 0.3);
-        shoot(0.5,0.5, 0.52);
-        rotateRobot(10, 0.3);
+        forwardRobot(30, 0.1);
+        rotateRobot(-5.5, 0.1);
+        shoot(0.5,-1);
+        rotateRobot(5.5, 0.1);
     }
 
     private int calculateEncoderTicks(double inches) {
@@ -304,22 +304,28 @@ public class BoomerangAuton extends LinearOpMode {
         stopRobot();
     }
 
-    private void shoot(double intakePower, double conveyorPower, double shooterPower) {
+    private void shoot(double intakePower, double conveyorPower) {
         shooter.setMode(DcMotorEx.RunMode.STOP_AND_RESET_ENCODER);
         shooter.setMode(DcMotorEx.RunMode.RUN_USING_ENCODER);
-        shooter.setVelocity(2000);
+        shooter.setVelocity(2325);
+        sleep(4000);
+        telemetry.addData("Speed:", shooter.getVelocity());
+        telemetry.update();
+        conveyorBelt.setPower(conveyorPower);
+        sleep(100);
+        conveyorBelt.setPower(0);
         sleep(4200);
+        telemetry.addData("Speed:", shooter.getVelocity());
+        telemetry.update();
         conveyorBelt.setPower(conveyorPower);
-        sleep(1000);
+        // intake.setPower(intakePower);
+        sleep(400);
         conveyorBelt.setPower(0);
-        sleep(2000);
+        sleep(4200);
+        telemetry.addData("Speed:", shooter.getVelocity());
+        telemetry.update();
         conveyorBelt.setPower(conveyorPower);
-        intake.setPower(intakePower);
-        sleep(1000);
-        conveyorBelt.setPower(0);
-        sleep(2000);
-        conveyorBelt.setPower(conveyorPower);
-        sleep(3000);
+        sleep(900);
         stopRobot();
     }
 }

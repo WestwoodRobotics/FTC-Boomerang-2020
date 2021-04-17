@@ -188,10 +188,10 @@ public class BoomerangTeleOp extends OpMode {
         intake.setPower(intakePower);
 
         if (gamepad2.right_bumper) {
-            conveyorPower = 0.5;
+            conveyorPower = 1;
         }
         else if (gamepad2.left_bumper) {
-            conveyorPower = -0.5;
+            conveyorPower = -0.7;
         }
         else {
             conveyorPower = 0;
