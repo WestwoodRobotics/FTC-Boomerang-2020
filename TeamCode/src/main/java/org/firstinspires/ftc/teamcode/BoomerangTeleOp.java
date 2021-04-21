@@ -28,9 +28,9 @@
  */
 
 
-/* BoomerangTeleOp is a Java Program developed by Paras N. and Kapilesh P. that allows a user to use
-controllers to control the Boomerang robot during the driver-controlled period of the FTC Ultimate
-Goal Competition. */
+/* BoomerangTeleOp is a Java Program developed by Paras N. with assistance from Kapilesh P. that
+allows a user to use controllers to control the Boomerang robot (BoomerBoi) during the
+driver-controlled period of the FTC Ultimate Goal Competition. */
 
 
 package org.firstinspires.ftc.teamcode;
@@ -86,14 +86,22 @@ public class BoomerangTeleOp extends OpMode {
         wobbleArmServo = hardwareMap.get(CRServoImpl.class, "wobbleArm");
         wobbleClawServo = hardwareMap.get(CRServoImpl.class, "wobbleClaw");
 
+        leftBackDrive.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+        leftFrontDrive.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+        rightBackDrive.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+        rightFrontDrive.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+        shooterMotor.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+        intake.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+        conveyorBelt.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+
         shooterMotor.setMode(DcMotorEx.RunMode.RUN_USING_ENCODER);
 
-        shooterMotor.setVelocityPIDFCoefficients(70,0,0,0);
+        shooterMotor.setVelocityPIDFCoefficients(90,0,0,0);
 
-        leftFrontDrive.setDirection(DcMotor.Direction.REVERSE);
-        rightFrontDrive.setDirection(DcMotor.Direction.FORWARD);
-        leftBackDrive.setDirection(DcMotor.Direction.REVERSE);
-        rightBackDrive.setDirection(DcMotor.Direction.FORWARD);
+        leftFrontDrive.setDirection(DcMotor.Direction.FORWARD);
+        rightFrontDrive.setDirection(DcMotor.Direction.REVERSE);
+        leftBackDrive.setDirection(DcMotor.Direction.FORWARD);
+        rightBackDrive.setDirection(DcMotor.Direction.REVERSE);
         intake.setDirection(DcMotor.Direction.FORWARD);
         conveyorBelt.setDirection(DcMotor.Direction.FORWARD);
         shooterMotor.setDirection(DcMotor.Direction.FORWARD);
@@ -115,12 +123,12 @@ public class BoomerangTeleOp extends OpMode {
     public void loop() {
         telemetry.addData("Speed:", shooterMotor.getVelocity());
 
-        turn = gamepad1.right_stick_x;
+        turn = -gamepad1.right_stick_x;
 
-        rightFrontPower = gamepad1.left_stick_y - gamepad1.left_stick_x - turn;
-        rightBackPower = gamepad1.left_stick_y + gamepad1.left_stick_x - turn;
-        leftFrontPower = gamepad1.left_stick_y + gamepad1.left_stick_x + turn;
-        leftBackPower = gamepad1.left_stick_y - gamepad1.left_stick_x + turn;
+        rightFrontPower = -gamepad1.left_stick_y + gamepad1.left_stick_x + turn;
+        rightBackPower = -gamepad1.left_stick_y - gamepad1.left_stick_x + turn;
+        leftFrontPower = -gamepad1.left_stick_y - gamepad1.left_stick_x - turn;
+        leftBackPower = -gamepad1.left_stick_y + gamepad1.left_stick_x - turn;
 
 
         maxPower = Math.abs(rightFrontPower);
@@ -145,16 +153,16 @@ public class BoomerangTeleOp extends OpMode {
             slowMode = true;
         }
         if (slowMode) {
-            leftFrontPower *= .25;
-            rightFrontPower *= .25;
-            leftBackPower *= .25;
-            rightBackPower *= .25;
+            leftFrontPower *= -0.35;
+            rightFrontPower *= -0.35;
+            leftBackPower *= -0.35;
+            rightBackPower *= -0.35;
         }
         if (!slowMode) {
-            leftFrontPower *= .6;
-            rightFrontPower *= .6;
-            leftBackPower *= .6;
-            rightBackPower *= .6;
+            leftFrontPower *= -0.6;
+            rightFrontPower *= -0.6;
+            leftBackPower *= -0.6;
+            rightBackPower *= -0.6;
         }
 
 
@@ -212,7 +220,7 @@ public class BoomerangTeleOp extends OpMode {
             isShooterRunning = false;
         }
         if (isShooterRunning) {
-            shooterPower = -2000;
+            shooterPower = -2325;
         }
         else {
             shooterPower = 0;

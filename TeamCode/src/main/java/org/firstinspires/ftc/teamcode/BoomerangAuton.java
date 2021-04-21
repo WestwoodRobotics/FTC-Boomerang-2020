@@ -28,19 +28,16 @@
  */
 
 
-/* BoomerangAuton is a Java program by Kapilesh P. and Paras N. that controls the Boomerang
-robot during the Autonomous Period of the FTC Ultimate Goal competition. */
+/* BoomerangAuton is a Java program by Kapilesh P. with assistance from Paras N. that controls the
+Boomerang robot (BoomerBoi) during the Autonomous Period of the FTC Ultimate Goal competition. */
 
 
 package org.firstinspires.ftc.teamcode;
 
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
-import com.qualcomm.robotcore.hardware.DcMotorController;
 import com.qualcomm.robotcore.hardware.DcMotorEx;
-import com.qualcomm.robotcore.hardware.VoltageSensor;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.hardware.CRServoImpl;
-import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
 
@@ -61,11 +58,11 @@ public class BoomerangAuton extends LinearOpMode {
         leftRobot(20.25);
         forwardRobot(54);
         shoot();
-        rotateRobot(5.95); // rotate counterclockwise, make negative if needed
+        rotateRobot(-5.95);
         shoot();
-        rotateRobot(5.81); // rotate counterclockwise, make negative if needed
+        rotateRobot(-5.81);
         shoot();
-        rotateRobot(11.76); // rotate clockwise, make negative if needed
+        rotateRobot(11.76);
         forwardRobot(16);
     } */
 
@@ -132,7 +129,7 @@ public class BoomerangAuton extends LinearOpMode {
 
         while (opModeIsActive()) {
             highGoalAction();
-            // forwardRobot(12, 1);
+            forwardRobot(40, 1);  // Parking (5 pts)
             // wobbleGoalAction();
             // powerShotAction();
             break;
@@ -143,7 +140,7 @@ public class BoomerangAuton extends LinearOpMode {
         // start left of the leftmost red line
         forwardRobot(30, 0.1);
         rotateRobot(-5.5, 0.1);
-        shoot(0.5,-1);
+        shoot(0,-1);
         rotateRobot(5.5, 0.1);
     }
 
