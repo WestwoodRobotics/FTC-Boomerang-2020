@@ -35,6 +35,7 @@ Boomerang robot (BoomerBoi) during the Autonomous Period of the FTC Ultimate Goa
 package org.firstinspires.ftc.teamcode;
 
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
+import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorEx;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.hardware.CRServoImpl;
@@ -46,14 +47,101 @@ public class BoomerangAuton extends LinearOpMode {
     private final ElapsedTime runtime = new ElapsedTime();
     CRServoImpl wobbleClawServo = null;
     CRServoImpl wobbleArmServo = null;
-    DcMotorEx leftBackMotor = null;
-    DcMotorEx rightBackMotor = null;
-    DcMotorEx leftFrontMotor = null;
-    DcMotorEx rightFrontMotor = null;
+    DcMotor leftBackMotor = null;
+    DcMotor rightBackMotor = null;
+    DcMotor leftFrontMotor = null;
+    DcMotor rightFrontMotor = null;
     DcMotorEx shooter = null;
-    DcMotorEx conveyorBelt = null;
-    DcMotorEx intake = null;
+    DcMotor conveyorBelt = null;
+    DcMotor intake = null;
 
+
+    @Override
+    public void runOpMode() throws InterruptedException {
+
+        // NOTE FOR TESTING: If code has problems try removing "throws Interrupted Exception" and instead uncomment the while loop with "opModeIsActive"
+        telemetry.addData("Status", "Initialized");
+        telemetry.update();
+
+        // Initialize the hardware variables. Note that the strings used here as parameters
+        // to 'get' must correspond to the names assigned during the robot configuration
+        // step (using the FTC Robot Controller app on the phone).
+        leftBackMotor = hardwareMap.get(DcMotor.class, "leftFront");
+        rightBackMotor = hardwareMap.get(DcMotor.class, "rightFront");
+        leftFrontMotor = hardwareMap.get(DcMotor.class, "leftBack");
+        rightFrontMotor = hardwareMap.get(DcMotor.class, "rightBack");
+        conveyorBelt = hardwareMap.get(DcMotor.class, "conveyor");
+        shooter = hardwareMap.get(DcMotorEx.class, "shooter");
+        wobbleClawServo = hardwareMap.get(CRServoImpl.class, "wobbleClaw");
+        wobbleArmServo = hardwareMap.get(CRServoImpl.class, "wobbleArm");
+        intake = hardwareMap.get(DcMotor.class, "intake");
+
+        shooter.setMode(DcMotorEx.RunMode.RUN_USING_ENCODER);
+
+        shooter.setVelocityPIDFCoefficients(70, 0, 0, 0);
+        // Most robots need the motor on one side to be reversed to drive forward
+        // Reverse the motor that runs backwards when connected directly to the battery
+        leftFrontMotor.setDirection(DcMotor.Direction.REVERSE);
+        rightFrontMotor.setDirection(DcMotor.Direction.FORWARD);
+        leftBackMotor.setDirection(DcMotor.Direction.REVERSE);
+        rightBackMotor.setDirection(DcMotor.Direction.FORWARD);
+        conveyorBelt.setDirection(DcMotor.Direction.REVERSE);
+        shooter.setDirection(DcMotorEx.Direction.REVERSE);
+        wobbleClawServo.setDirection(CRServoImpl.Direction.FORWARD);
+        wobbleArmServo.setDirection(CRServoImpl.Direction.FORWARD);
+        intake.setDirection(DcMotor.Direction.REVERSE);
+
+        waitForStart();
+
+        runtime.reset();
+        resetEncoders();
+
+        // while (opModeIsActive()) {
+            highGoalAction();
+            forwardRobot(40, 1);  // Parking (5 pts)
+            // break;
+        // }
+    }
+
+    // ---------- Functions ----------
+
+    // ----- Actions -----
+
+    // -- High Goal --
+    private void highGoalAction() {
+        // start left of the leftmost red line
+        forwardRobot(30, 0.1);
+        rotateRobot(-5.5, 0.1);
+        highGoalShoot(2325,-1,0);
+        rotateRobot(5.5, 0.1);
+    }
+
+    private void highGoalShoot(double shooterVelocity, double conveyorPower, double intakePower) {
+        resetEncoders();
+        shooter.setVelocity(shooterVelocity);
+        intake.setPower(intakePower);
+        sleep(4000);
+        telemetry.addData("Speed:", shooter.getVelocity());
+        telemetry.update();
+        conveyorBelt.setPower(conveyorPower);
+        sleep(100);
+        conveyorBelt.setPower(0);
+        sleep(4200);
+        telemetry.addData("Speed:", shooter.getVelocity());
+        telemetry.update();
+        conveyorBelt.setPower(conveyorPower);
+        // intake.setPower(intakePower);
+        sleep(400);
+        conveyorBelt.setPower(0);
+        sleep(4200);
+        telemetry.addData("Speed:", shooter.getVelocity());
+        telemetry.update();
+        conveyorBelt.setPower(conveyorPower);
+        sleep(900);
+        stopRobot();
+    }
+
+    // -- PowerShot --
     /* private void powerShotAction() {
         leftRobot(20.25);
         forwardRobot(54);
@@ -66,6 +154,7 @@ public class BoomerangAuton extends LinearOpMode {
         forwardRobot(16);
     } */
 
+    // -- Wobble Goal --
     /* private void wobbleGoalAction() {
         leftRobot(3);
         forwardRobot(18);
@@ -89,75 +178,16 @@ public class BoomerangAuton extends LinearOpMode {
         forwardRobot(36);
     } */
 
-    @Override
-    public void runOpMode() {
-        telemetry.addData("Status", "Initialized");
-        telemetry.update();
 
-        // Initialize the hardware variables. Note that the strings used here as parameters
-        // to 'get' must correspond to the names assigned during the robot configuration
-        // step (using the FTC Robot Controller app on the phone).
-        leftBackMotor = hardwareMap.get(DcMotorEx.class, "leftFront");
-        rightBackMotor = hardwareMap.get(DcMotorEx.class, "rightFront");
-        leftFrontMotor = hardwareMap.get(DcMotorEx.class, "leftBack");
-        rightFrontMotor = hardwareMap.get(DcMotorEx.class, "rightBack");
-        conveyorBelt = hardwareMap.get(DcMotorEx.class, "conveyor");
-        shooter = hardwareMap.get(DcMotorEx.class, "shooter");
-        wobbleClawServo = hardwareMap.get(CRServoImpl.class, "wobbleClaw");
-        wobbleArmServo = hardwareMap.get(CRServoImpl.class, "wobbleArm");
-        intake = hardwareMap.get(DcMotorEx.class, "intake");
-
-        shooter.setMode(DcMotorEx.RunMode.RUN_USING_ENCODER);
-
-        shooter.setVelocityPIDFCoefficients(70, 0, 0, 0);
-        // Most robots need the motor on one side to be reversed to drive forward
-        // Reverse the motor that runs backwards when connected directly to the battery
-        leftFrontMotor.setDirection(DcMotorEx.Direction.REVERSE);
-        rightFrontMotor.setDirection(DcMotorEx.Direction.FORWARD);
-        leftBackMotor.setDirection(DcMotorEx.Direction.REVERSE);
-        rightBackMotor.setDirection(DcMotorEx.Direction.FORWARD);
-        conveyorBelt.setDirection(DcMotorEx.Direction.REVERSE);
-        shooter.setDirection(DcMotorEx.Direction.REVERSE);
-        wobbleClawServo.setDirection(CRServoImpl.Direction.FORWARD);
-        wobbleArmServo.setDirection(CRServoImpl.Direction.FORWARD);
-        intake.setDirection(DcMotorEx.Direction.REVERSE);
-
-        stopRobot();
-        resetEncoders();
-        waitForStart();
-        runtime.reset();
-
-        while (opModeIsActive()) {
-            highGoalAction();
-            forwardRobot(40, 1);  // Parking (5 pts)
-            // wobbleGoalAction();
-            // powerShotAction();
-            break;
-        }
-    }
-
-    private void highGoalAction() {
-        // start left of the leftmost red line
-        forwardRobot(30, 0.1);
-        rotateRobot(-5.5, 0.1);
-        shoot(0,-1);
-        rotateRobot(5.5, 0.1);
-    }
-
-    private int calculateEncoderTicks(double inches) {
-        double inchesEncoderValue = Math.round(inches * ((28 * 20) / (2 * Math.PI * (49 / 25.4)))); //Formula for Encoder Ticks per Revolution = (encoderTicksPerRevolution*gearingRatio)/circumference, circumference = 2*pi*radius
-        int encoderValue = (int) inchesEncoderValue;
-        return encoderValue;
-    }
-
+    // ----- Drivetrain Functions -----
     private void stopRobot() {
-        leftBackMotor.setZeroPowerBehavior(DcMotorEx.ZeroPowerBehavior.BRAKE);
-        leftFrontMotor.setZeroPowerBehavior(DcMotorEx.ZeroPowerBehavior.BRAKE);
-        rightBackMotor.setZeroPowerBehavior(DcMotorEx.ZeroPowerBehavior.BRAKE);
-        rightFrontMotor.setZeroPowerBehavior(DcMotorEx.ZeroPowerBehavior.BRAKE);
+        leftBackMotor.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+        leftFrontMotor.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+        rightBackMotor.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+        rightFrontMotor.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
         shooter.setZeroPowerBehavior(DcMotorEx.ZeroPowerBehavior.BRAKE);
-        intake.setZeroPowerBehavior(DcMotorEx.ZeroPowerBehavior.BRAKE);
-        conveyorBelt.setZeroPowerBehavior(DcMotorEx.ZeroPowerBehavior.BRAKE);
+        intake.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+        conveyorBelt.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
 
         leftBackMotor.setPower(0);
         leftFrontMotor.setPower(0);
@@ -260,25 +290,6 @@ public class BoomerangAuton extends LinearOpMode {
         stopRobot();
     }
 
-    private void resetEncoders() {
-        leftBackMotor.setMode(DcMotorEx.RunMode.STOP_AND_RESET_ENCODER);
-        rightBackMotor.setMode(DcMotorEx.RunMode.STOP_AND_RESET_ENCODER);
-        leftFrontMotor.setMode(DcMotorEx.RunMode.STOP_AND_RESET_ENCODER);
-        rightFrontMotor.setMode(DcMotorEx.RunMode.STOP_AND_RESET_ENCODER);
-
-        leftBackMotor.setMode(DcMotorEx.RunMode.RUN_USING_ENCODER);
-        rightBackMotor.setMode(DcMotorEx.RunMode.RUN_USING_ENCODER);
-        leftFrontMotor.setMode(DcMotorEx.RunMode.RUN_USING_ENCODER);
-        rightFrontMotor.setMode(DcMotorEx.RunMode.RUN_USING_ENCODER);
-    }
-
-    private void wheelEncoderSettings() {
-        leftBackMotor.setMode(DcMotorEx.RunMode.RUN_TO_POSITION);
-        rightBackMotor.setMode(DcMotorEx.RunMode.RUN_TO_POSITION);
-        leftFrontMotor.setMode(DcMotorEx.RunMode.RUN_TO_POSITION);
-        rightFrontMotor.setMode(DcMotorEx.RunMode.RUN_TO_POSITION);
-    }
-
     private void rotateRobot(double degrees, double power) {
         int encoderValue = calculateEncoderTicks(degrees);
         resetEncoders();
@@ -301,28 +312,33 @@ public class BoomerangAuton extends LinearOpMode {
         stopRobot();
     }
 
-    private void shoot(double intakePower, double conveyorPower) {
-        shooter.setMode(DcMotorEx.RunMode.STOP_AND_RESET_ENCODER);
-        shooter.setMode(DcMotorEx.RunMode.RUN_USING_ENCODER);
-        shooter.setVelocity(2325);
-        sleep(4000);
-        telemetry.addData("Speed:", shooter.getVelocity());
-        telemetry.update();
-        conveyorBelt.setPower(conveyorPower);
-        sleep(100);
-        conveyorBelt.setPower(0);
-        sleep(4200);
-        telemetry.addData("Speed:", shooter.getVelocity());
-        telemetry.update();
-        conveyorBelt.setPower(conveyorPower);
-        // intake.setPower(intakePower);
-        sleep(400);
-        conveyorBelt.setPower(0);
-        sleep(4200);
-        telemetry.addData("Speed:", shooter.getVelocity());
-        telemetry.update();
-        conveyorBelt.setPower(conveyorPower);
-        sleep(900);
-        stopRobot();
+
+    // ----- Encoder Functions -----
+    private int calculateEncoderTicks(double inches) {
+        double inchesEncoderValue = Math.round(inches * ((28 * 20) / (2 * Math.PI * (49 / 25.4)))); //Formula for Encoder Ticks per Revolution = (encoderTicksPerRevolution*gearingRatio)/circumference, circumference = 2*pi*radius
+        int encoderValue = (int) inchesEncoderValue;
+        return encoderValue;
     }
+
+    private void resetEncoders() {
+        leftBackMotor.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        rightBackMotor.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        leftFrontMotor.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        rightFrontMotor.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        shooter.setMode(DcMotorEx.RunMode.STOP_AND_RESET_ENCODER);
+
+        leftBackMotor.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+        rightBackMotor.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+        leftFrontMotor.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+        rightFrontMotor.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+        shooter.setMode(DcMotorEx.RunMode.RUN_USING_ENCODER);
+    }
+
+    private void wheelEncoderSettings() {
+        leftBackMotor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+        rightBackMotor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+        leftFrontMotor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+        rightFrontMotor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+    }
+
 }
