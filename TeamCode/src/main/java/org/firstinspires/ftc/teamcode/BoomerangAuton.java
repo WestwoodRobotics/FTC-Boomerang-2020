@@ -57,11 +57,12 @@ public class BoomerangAuton extends LinearOpMode {
 
 
     @Override
-    public void runOpMode() throws InterruptedException {
+    public void runOpMode() {
 
-        // NOTE FOR TESTING: If code has problems try removing "throws Interrupted Exception" and instead uncomment the while loop with "opModeIsActive"
         telemetry.addData("Status", "Initialized");
         telemetry.update();
+
+        // HARDWARE MAP
 
         // Initialize the hardware variables. Note that the strings used here as parameters
         // to 'get' must correspond to the names assigned during the robot configuration
@@ -76,9 +77,13 @@ public class BoomerangAuton extends LinearOpMode {
         wobbleArmServo = hardwareMap.get(CRServoImpl.class, "wobbleArm");
         intake = hardwareMap.get(DcMotor.class, "intake");
 
+        // VELOCITY PID FOR SHOOTER
         shooter.setMode(DcMotorEx.RunMode.RUN_USING_ENCODER);
 
         shooter.setVelocityPIDFCoefficients(70, 0, 0, 0);
+
+        // DCMOTOR/SERVO INITIALIZATION
+
         // Most robots need the motor on one side to be reversed to drive forward
         // Reverse the motor that runs backwards when connected directly to the battery
         leftFrontMotor.setDirection(DcMotor.Direction.REVERSE);
@@ -96,14 +101,12 @@ public class BoomerangAuton extends LinearOpMode {
         runtime.reset();
         resetEncoders();
 
-        // while (opModeIsActive()) {
-            highGoalAction();
-            forwardRobot(40, 1);  // Parking (5 pts)
-            // break;
-        // }
+        // ACTIONS TO BE PERFORMED
+        highGoalAction();
+        forwardRobot(40, 1);  // Parking (5 pts)
     }
 
-    // ---------- Functions ----------
+    // ---------- Methods ----------
 
     // ----- Actions -----
 
@@ -179,16 +182,8 @@ public class BoomerangAuton extends LinearOpMode {
     } */
 
 
-    // ----- Drivetrain Functions -----
+    // ----- Drivetrain Methods -----
     private void stopRobot() {
-        leftBackMotor.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
-        leftFrontMotor.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
-        rightBackMotor.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
-        rightFrontMotor.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
-        shooter.setZeroPowerBehavior(DcMotorEx.ZeroPowerBehavior.BRAKE);
-        intake.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
-        conveyorBelt.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
-
         leftBackMotor.setPower(0);
         leftFrontMotor.setPower(0);
         rightBackMotor.setPower(0);
@@ -313,7 +308,7 @@ public class BoomerangAuton extends LinearOpMode {
     }
 
 
-    // ----- Encoder Functions -----
+    // ----- Encoder Methods -----
     private int calculateEncoderTicks(double inches) {
         double inchesEncoderValue = Math.round(inches * ((28 * 20) / (2 * Math.PI * (49 / 25.4)))); //Formula for Encoder Ticks per Revolution = (encoderTicksPerRevolution*gearingRatio)/circumference, circumference = 2*pi*radius
         int encoderValue = (int) inchesEncoderValue;
